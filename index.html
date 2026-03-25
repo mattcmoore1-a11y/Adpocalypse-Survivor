@@ -91,6 +91,10 @@
         <option value="coin_small">Coin (1)</option>
         <option value="coin_big">Big coin (3)</option>
         <option value="chest">Treasure chest</option>
+        <option value="powerup_heal">Powerup: Heal</option>
+        <option value="powerup_magnet">Powerup: Coin Magnet</option>
+        <option value="powerup_shield">Powerup: Shield</option>
+        <option value="powerup_barrage">Powerup: Barrage</option>
       </select>
       <button id="devSpawnDropBtn">Spawn Drop</button>
     </div>
@@ -156,6 +160,42 @@
       baseCoins: 4,
       incrementCoins: 4,
       levelCoins: null, // e.g. [5,10,15,...] OR leave null to use base+increment
+    },
+
+    POWERUPS: {
+      enabled: true,
+      normalDropChance: 0.028,
+      eliteDropChance: 0.22,
+      bossDropChance: 0.65,
+      pickupRadius: 11,
+      bobSpeed: 4.0,
+      bobAmt: 2,
+      heal: {
+        dropWeight: 1.20,
+        healAmount: 25,
+      },
+      magnet: {
+        dropWeight: 0.85,
+        durationSec: 8.0,
+        radiusMult: 5.5,
+        pullAllCoinsOnPickup: true,
+      },
+      shield: {
+        dropWeight: 1.2,
+        blocks: 1,
+      },
+      barrage: {
+        dropWeight: 0.70,
+        waves: 24,
+        shotsPerWave: 9,
+        spreadDeg: 58,
+        damage: 24,
+        speed: 360,
+        lifeSec: 0.95,
+        waveIntervalSec: 0.13,
+        renderScale: 1.35,
+        trailScale: 1.35,
+      },
     },
 
     CHOICES: {
@@ -585,10 +625,10 @@
         id: "phase2_swarm",
         archetype: "cookie",
         w: 14, h: 14,
-        speed: 66,
+        speed: 60,
         speedJitterMin: 0.97,
         speedJitterMax: 1.18,
-        hp: 20,
+        hp: 18,
         touch: 11,
         hitInterval: 0.42,
         scoreOnKill: 12,
@@ -947,10 +987,10 @@
     // Card rendering knobs
     card: {
       titleFont: "13px monospace",
-      descFont:  "11px monospace",
-      flavorFont:"8px monospace",
-      descLineH: 12,
-      flavorLineH: 11,
+      descFont:  "10px monospace",
+      flavorFont:"7px monospace",
+      descLineH: 11,
+      flavorLineH: 10,
     },
 
     // Copy / flavor / weights
@@ -1269,6 +1309,8 @@
         table: xpUseTable ? BALANCE.XP.levelCoins.slice() : [],
       },
 
+      powerups: JSON.parse(JSON.stringify(BALANCE.POWERUPS || {})),
+
       modifiers: {
         firstPickLevel: BALANCE.MODIFIERS.firstPickLevel,
         secondPickLevel: BALANCE.MODIFIERS.secondPickLevel,
@@ -1582,6 +1624,14 @@
     chest() {
       this.blip(660, 0.06, "square", 0.10);
       this.blip(880, 0.06, "square", 0.08);
+    }
+    powerup() {
+      this.blip(520, 0.06, "triangle", 0.06, 0.00);
+      this.blip(780, 0.08, "square", 0.08, 0.04);
+    }
+    shieldBlock() {
+      this.blip(320, 0.05, "square", 0.05, 0.00);
+      this.blip(460, 0.08, "triangle", 0.06, 0.01);
     }
   }
 
@@ -1933,12 +1983,22 @@
 
       this.weapons = [];
       this.weaponUpgradeTiers = { performance: 0, creator: 0, advocate: 0 };
+      this.shieldHits = 0;
+      this.magnetTimer = 0;
+      this.facingX = 1;
+      this.facingY = 0;
     }
     applyDamage(n) {
-      if(this.invuln) return;
-      if(this.iFrame>0) return;
+      if(this.invuln) return false;
+      if(this.iFrame>0) return false;
+      if (this.shieldHits > 0) {
+        this.shieldHits = Math.max(0, this.shieldHits - 1);
+        this.iFrame = Math.max(this.iFrame, CFG.player.iFrame * 0.65);
+        return false;
+      }
       this.budget = clamp(this.budget-n,0,this.maxBudget);
       this.iFrame = CFG.player.iFrame;
+      return true;
     }
     update(dt, input) {
       const a=input.axis();
@@ -1946,10 +2006,21 @@
       this.vx=a.x*spd; this.vy=a.y*spd;
       this.x += this.vx*dt;
       this.y += this.vy*dt;
+      if (Math.abs(this.vx) > 0.001 || Math.abs(this.vy) > 0.001) {
+        const d = Math.hypot(this.vx, this.vy) || 1;
+        this.facingX = this.vx / d;
+        this.facingY = this.vy / d;
+      }
       if(this.iFrame>0) this.iFrame=Math.max(0,this.iFrame-dt);
+      if(this.magnetTimer>0) this.magnetTimer=Math.max(0,this.magnetTimer-dt);
     }
     draw(g, cam, theme) {
       const s=cam.w2s(this.x,this.y);
+      if (this.shieldHits > 0) {
+        g.strokeStyle = theme.mode===ThemeMode.DARK ? 'rgba(120,205,255,0.92)' : 'rgba(44,106,214,0.92)';
+        g.lineWidth = 2;
+        g.beginPath(); g.arc(s.x, s.y-3, this.r + 6 + Math.sin(performance.now()*0.012)*1.2, 0, Math.PI*2); g.stroke();
+      }
       g.fillStyle = (this.iFrame>0) ? "#2f6fff" : theme.text;
       g.fillRect((s.x-5)|0, (s.y-6)|0, 10, 12);
       g.fillStyle = (theme.mode===ThemeMode.DARK) ? "#FFD7B3" : "#D6A583";
@@ -3019,7 +3090,8 @@
     update(dt, game){
       if(this.dead) return;
       const p=game.player;
-      const track = CFG.xp.coinAttractDefault * p.stats.tracking;
+      const magnetMult = (p.magnetTimer > 0) ? (CFG.powerups?.magnet?.radiusMult ?? 1) : 1;
+      const track = CFG.xp.coinAttractDefault * p.stats.tracking * magnetMult;
 
       const dx=p.x-this.x, dy=p.y-this.y;
       const d=Math.hypot(dx,dy)||1;
@@ -3100,6 +3172,52 @@
       g.fillStyle=(theme.mode===ThemeMode.DARK) ? "rgba(255,255,255,0.55)" : "rgba(0,0,0,0.18)";
       g.fillRect(x+3,y-bob-2,1,1);
       g.fillRect(x+14,y-bob-3,1,1);
+    }
+  }
+
+  class Powerup {
+    constructor(x,y,kind){
+      this.x=x; this.y=y; this.kind=kind || 'heal'; this.dead=false; this.t=0;
+    }
+    update(dt, game){
+      this.t += dt;
+      const p=game.player; if(!p) return;
+      const d=Math.hypot(p.x-this.x, p.y-this.y);
+      if(d <= p.r + (CFG.powerups.pickupRadius || 10)){
+        this.dead = true;
+        game.applyPowerup(this.kind);
+      }
+    }
+    draw(g,cam, theme){
+      const s=cam.w2s(this.x,this.y);
+      const bob = Math.sin(this.t * (CFG.powerups.bobSpeed || 4.0)) * (CFG.powerups.bobAmt || 2);
+      const x = Math.round(s.x), y = Math.round(s.y - bob);
+      const outline = theme.mode===ThemeMode.DARK ? '#0b1320' : '#f8fbff';
+      if (this.kind === 'heal') {
+        g.fillStyle = '#ff5a7d';
+        g.fillRect(x-4, y-7, 8, 14);
+        g.fillRect(x-7, y-4, 14, 8);
+        g.fillStyle = '#ffdce7';
+        g.fillRect(x-2, y-5, 4, 10);
+        g.fillRect(x-5, y-2, 10, 4);
+      } else if (this.kind === 'magnet') {
+        g.strokeStyle = '#ff5252'; g.lineWidth = 3;
+        g.beginPath(); g.moveTo(x-6,y-6); g.lineTo(x-6,y+4); g.lineTo(x-1,y+4); g.stroke();
+        g.beginPath(); g.moveTo(x+6,y-6); g.lineTo(x+6,y+4); g.lineTo(x+1,y+4); g.stroke();
+        g.fillStyle = '#8fd3ff'; g.fillRect(x-8,y+3,16,3);
+      } else if (this.kind === 'shield') {
+        g.fillStyle = '#7ec8ff';
+        g.beginPath(); g.moveTo(x, y-8); g.lineTo(x+7,y-3); g.lineTo(x+5,y+7); g.lineTo(x,y+10); g.lineTo(x-5,y+7); g.lineTo(x-7,y-3); g.closePath(); g.fill();
+        g.fillStyle = '#e8f8ff'; g.fillRect(x-2,y-2,4,6);
+      } else if (this.kind === 'barrage') {
+        g.fillStyle = '#ffd24a';
+        g.beginPath(); g.moveTo(x-8,y+5); g.lineTo(x+8,y); g.lineTo(x-8,y-5); g.closePath(); g.fill();
+        g.fillRect(x-10,y-1,6,2);
+        g.fillStyle = '#fff3b0';
+        g.fillRect(x-2,y-1,8,2);
+      }
+      g.strokeStyle = outline; g.lineWidth = 1.5;
+      g.beginPath(); g.arc(x, y, 12, 0, Math.PI*2); g.stroke();
     }
   }
 
@@ -3345,6 +3463,7 @@
       this.orbitals=[];
       this.coins=[];
       this.chests=[];
+      this.powerups=[];
       this._delayedShots=[];
 
       this.spawnAcc=0;
@@ -3919,6 +4038,7 @@
       this.orbitals.length=0;
       this.coins.length=0;
       this.chests.length=0;
+      this.powerups.length=0;
       this._delayedShots.length=0;
 
       this.spawnAcc=0;
@@ -5429,13 +5549,114 @@
       }
     }
 
+    rollAndSpawnPowerup(enemy) {
+      if (!CFG.powerups?.enabled || !enemy || enemy.noDrops || enemy.isWall) return;
+      let dropChance = CFG.powerups.normalDropChance ?? 0;
+      if (enemy instanceof BossEnemy) dropChance = CFG.powerups.bossDropChance ?? dropChance;
+      else if (enemy.isElite || enemy.isMini) dropChance = CFG.powerups.eliteDropChance ?? dropChance;
+      if (Math.random() > dropChance) return;
+      const kind = this.choosePowerupKind();
+      if (!kind) return;
+      this.powerups.push(new Powerup(enemy.x + rand(-4,4), enemy.y + rand(-4,4), kind));
+    }
+
+    choosePowerupKind() {
+      const defs = CFG.powerups || {};
+      const kinds = ['heal','magnet','shield','barrage'];
+      let total = 0;
+      const weights = [];
+      for (const k of kinds) {
+        const w = Math.max(0, Number(defs[k]?.dropWeight) || 0);
+        weights.push(w); total += w;
+      }
+      if (total <= 0) return null;
+      let r = Math.random() * total;
+      for (let i=0;i<kinds.length;i++) {
+        r -= weights[i];
+        if (r <= 0) return kinds[i];
+      }
+      return kinds[kinds.length-1];
+    }
+
+    applyPowerup(kind) {
+      const p = this.player; if (!p) return;
+      if (kind === 'heal') {
+        p.budget = clamp(p.budget + (CFG.powerups.heal?.healAmount ?? 25), 0, p.maxBudget);
+      } else if (kind === 'magnet') {
+        p.magnetTimer = Math.max(p.magnetTimer, CFG.powerups.magnet?.durationSec ?? 8);
+        if (CFG.powerups.magnet?.pullAllCoinsOnPickup) {
+          for (const c of this.coins) if (c && !c.dead) c.vac = true;
+        }
+      } else if (kind === 'shield') {
+        p.shieldHits = Math.max(p.shieldHits, Number(CFG.powerups.shield?.blocks) || 1);
+      } else if (kind === 'barrage') {
+        this.firePowerupBarrage();
+      }
+      this.sfx.powerup();
+    }
+
+    getPlayerAimFacing() {
+      const p = this.player;
+      if (!p) return { x: 1, y: 0 };
+      let fx = Number.isFinite(p.moveX) ? p.moveX : 0;
+      let fy = Number.isFinite(p.moveY) ? p.moveY : 0;
+      if (Math.hypot(fx, fy) < 0.001) {
+        fx = Number.isFinite(p.facingX) ? p.facingX : 0;
+        fy = Number.isFinite(p.facingY) ? p.facingY : 0;
+      }
+      if (Math.hypot(fx, fy) < 0.001) return { x: 1, y: 0 };
+      const m = Math.hypot(fx, fy) || 1;
+      return { x: fx / m, y: fy / m };
+    }
+
+    spawnBarrageWave(cfg) {
+      const p = this.player; if (!p) return;
+      const facing = this.getPlayerAimFacing();
+      const shots = Math.max(1, Number(cfg.shotsPerWave) || 7);
+      const spread = (Number(cfg.spreadDeg) || 45) * Math.PI / 180;
+      const speed = Number(cfg.speed) || 340;
+      const life = Number(cfg.lifeSec) || 0.9;
+      const dmg = Number(cfg.damage) || 20;
+      const baseAng = Math.atan2(facing.y, facing.x);
+      const originX = p.x + Math.cos(baseAng) * (p.r + 5);
+      const originY = p.y + Math.sin(baseAng) * (p.r + 5);
+      const opts = {
+        r: 5,
+        renderScale: Number(cfg.renderScale) || 1.35,
+        trailScale: Number(cfg.trailScale) || 1.35,
+        color: 'rgba(255,214,74,0.98)',
+        glow: 'rgba(255,230,150,0.36)'
+      };
+      for (let i=0; i<shots; i++) {
+        const t = shots === 1 ? 0.5 : (i / (shots - 1));
+        const ang = baseAng + (t - 0.5) * spread;
+        const vx = Math.cos(ang) * speed;
+        const vy = Math.sin(ang) * speed;
+        this.bullets.push(new Bullet(originX, originY, vx, vy, dmg, life, opts));
+      }
+    }
+
+    firePowerupBarrage() {
+      const p = this.player; if (!p) return;
+      const cfg = CFG.powerups.barrage || {};
+      const waves = Math.max(1, Number(cfg.waves) || 1);
+      const interval = Number(cfg.waveIntervalSec) || 0.12;
+      for (let w=0; w<waves; w++) {
+        this._delayedShots.push({
+          at: this.time + w * interval,
+          kind: 'barrageWave',
+          cfg,
+        });
+      }
+    }
+
     updateWeapons(dt) {
       const p=this.player;
       for (let i=this.enemyProjectiles.length-1;i>=0;i--){
         const ep=this.enemyProjectiles[i];
         if (dist2(ep.x, ep.y, p.x, p.y) <= (ep.r + p.r)*(ep.r + p.r)) {
-          p.applyDamage(ep.dmg);
-          this.sfx.hit();
+          const took = p.applyDamage(ep.dmg);
+          if (took) this.sfx.hit(); else this.sfx.shieldBlock();
           this.enemyProjectiles.splice(i,1);
         }
       }
@@ -5487,7 +5708,11 @@
       for(let i=this._delayedShots.length-1;i>=0;i--){
         const s=this._delayedShots[i];
         if(t >= s.at){
-          this.bullets.push(new Bullet(s.x,s.y,s.vx,s.vy,s.dmg,s.life, s.opts || {}));
+          if (s.kind === 'barrageWave') {
+            this.spawnBarrageWave(s.cfg || {});
+          } else {
+            this.bullets.push(new Bullet(s.x,s.y,s.vx,s.vy,s.dmg,s.life, s.opts || {}));
+          }
           this._delayedShots.splice(i,1);
         }
       }
@@ -6099,6 +6324,8 @@
             }
           }
 
+          this.rollAndSpawnPowerup(e);
+
           if(e.noDrops) {
           } else if(e instanceof BossEnemy) {
             this.addScore(CFG.enemies.boss.scoreOnKill);
@@ -6143,6 +6370,11 @@
         const c=this.chests[i];
         c.update(dt, this);
         if(c.dead) this.chests.splice(i,1);
+      }
+      for(let i=this.powerups.length-1;i>=0;i--){
+        const pu=this.powerups[i];
+        pu.update(dt, this);
+        if(pu.dead) this.powerups.splice(i,1);
       }
 
       this.updateWeapons(dt);
@@ -6337,6 +6569,7 @@
       }
 
       for(const c of this.coins) c.draw(g,this.cam);
+      for(const pu of this.powerups) pu.draw(g,this.cam,this.theme);
       for(const ch of this.chests) ch.draw(g,this.cam,this.theme);
 
       for(const tr of (this.player?.advocateTrails || [])) {
@@ -6546,9 +6779,9 @@
       }
 
       const bullets = [
-        "> Defeat ads, collect coins, and upgrade your partnerships",
-        "> Move with WASD/arrow keys",
-        "> Press space to pause"
+        "- Defeat ads, collect coins, and upgrade your partnerships",
+        "- Move with WASD/arrow keys",
+        "- Press space to pause"
       ];
       let by = sy + 8;
       for (const line of bullets) {
@@ -6982,6 +7215,10 @@
           if (which === "coin_small") this.coins.push(new Coin(p.x+rand(-6,6), p.y+rand(-6,6), BALANCE.XP.coinXp, false));
           else if (which === "coin_big") this.coins.push(new Coin(p.x+rand(-6,6), p.y+rand(-6,6), 3, true));
           else if (which === "chest") this.chests.push(new Chest(p.x+rand(-6,6), p.y+rand(-6,6)));
+          else if (which === "powerup_heal") this.powerups.push(new Powerup(p.x+rand(-6,6), p.y+rand(-6,6), 'heal'));
+          else if (which === "powerup_magnet") this.powerups.push(new Powerup(p.x+rand(-6,6), p.y+rand(-6,6), 'magnet'));
+          else if (which === "powerup_shield") this.powerups.push(new Powerup(p.x+rand(-6,6), p.y+rand(-6,6), 'shield'));
+          else if (which === "powerup_barrage") this.powerups.push(new Powerup(p.x+rand(-6,6), p.y+rand(-6,6), 'barrage'));
         }
 
         devForceLevelUp() {
@@ -6994,6 +7231,7 @@
           this.bullets.length = 0;
           this.fields.length = 0;
           this.fieldBursts.length = 0;
+          this.powerups.length = 0;
           this._delayedShots.length = 0;
           this.bossActive = false;
           this.lull = false;
