@@ -126,7 +126,7 @@
 (() => {
   "use strict"
 
-  const BUILD_VERSION = "v0.60a";
+  const BUILD_VERSION = "v0.62c";
 ;
 
   /*****************************************************************
@@ -164,14 +164,14 @@
 
     POWERUPS: {
       enabled: true,
-      normalDropChance: 0.028,
-      eliteDropChance: 0.22,
+      normalDropChance: 0.020,
+      eliteDropChance: 0.40,
       bossDropChance: 0.65,
       pickupRadius: 11,
       bobSpeed: 4.0,
       bobAmt: 2,
       heal: {
-        dropWeight: 1.20,
+        dropWeight: 1.30,
         healAmount: 25,
       },
       magnet: {
@@ -232,18 +232,18 @@
       choices: 2,
       overlapBonusPerExtra: 0.50,
       spawnWeights: {
-        nearEnemy: 0.50,
-        nearPlayer: 0.30,
-        random: 0.20,
+        nearEnemy: 0.30,
+        nearPlayer: 0.70,
+        random: 0.00,
       },
       base: {
         fieldsPerCast: 1,
         radiusMult: 1.0,
-        lifeMult: 1.0,
-        dmgMult: 1.0,
+        lifeMult: 1.1,
+        dmgMult: 1.1,
         cooldownMult: 1.0,
-        nearEnemyRadius: 28,
-        nearPlayerRadius: 72,
+        nearEnemyRadius: 20,
+        nearPlayerRadius: 30,
         pulseInterval: 0.95,
         pulseFlashSec: 0.18,
       },
@@ -256,7 +256,7 @@
           fieldsPerCast: 1,
           radiusMult: 1.75,
           lifeMult: 1.40,
-          dmgMult: 1.18,
+          dmgMult: 1.3,
           cooldownMult: 1.18,
           nearEnemyRadius: 20,
           nearPlayerRadius: 56,
@@ -270,7 +270,7 @@
           fieldsPerCast: 3,
           radiusMult: 0.68,
           lifeMult: 0.72,
-          dmgMult: 0.58,
+          dmgMult: 0.78,
           cooldownMult: 0.74,
           nearEnemyRadius: 36,
           nearPlayerRadius: 96,
@@ -645,7 +645,7 @@
         id: "phase2_retargeter",
         archetype: "retargeter",
         r: 10,
-        speed: 48,
+        speed: 30,
         speedJitterMin: 0.96,
         speedJitterMax: 1.06,
         hp: 42,
@@ -676,7 +676,7 @@
         archetype: "retargeter",
         elite: true,
         r: 14,
-        speed: 52,
+        speed: 32,
         speedJitterMin: 0.98,
         speedJitterMax: 1.06,
         hp: 135,
@@ -739,15 +739,15 @@
         id: "phase3_swarm",
         archetype: "gatekeeper",
         r: 13,
-        speed: 58,
+        speed: 54,
         speedJitterMin: 0.96,
         speedJitterMax: 1.08,
-        hp: 34,
+        hp: 40,
         touch: 17,
         hitInterval: 0.38,
         scoreOnKill: 18,
         coinXp: 1,
-        interceptStrength: 0.78,
+        interceptStrength: 0.82,
         turnRate: 5.0,
         palette: { shell: "#56746a", door: "#d5ead5", trim: "#1b2a28", glow: "rgba(210,255,220,0.15)" },
         separationRadiusMult: 1.14,
@@ -802,7 +802,7 @@
         archetype: "doo_opoly",
         r: 22,
         speed: 57,
-        hp: 3200,
+        hp: 6000,
         touch: 23,
         hitInterval: 0.34,
         scoreOnKill: 560,
@@ -816,9 +816,9 @@
         tetherDamage: 8,
         tetherHitInterval: 0.28,
         tetherWidth: 8,
-        gardenStartRadius: 220,
-        gardenShrinkSpeed: 7,
-        gardenWallHp: 110,
+        gardenStartRadius: 500,
+        gardenShrinkSpeed: 6,
+        gardenWallHp: 150,
         gardenWallThickness: 18,
         gardenSegmentsPerSide: 20,
         gardenInitialGatekeepers: 3,
@@ -922,6 +922,25 @@
       // - "front_arc"        : spawns ahead of the player's movement direction
       // - "random_edge"      : scattered spawn points around the outer edges
       // - "lane_drop"        : compact line entering from one side
+    },
+
+    ENDLESS: {
+      enabled: true,
+      clearHostilesOnStart: true,
+      clearProjectilesOnStart: true,
+      basePerSec: 2.3,
+      spawnRampPerMin: 0.55,
+      hpRampPerMin: 0.55,
+      speedRampPerMin: 0.06,
+      waveLabelPrefix: "Endless:",
+      waves: [
+        { id:"cookie_swarm",   label:"Cookie Swarm",      durationSec: 20, spawnRateMult: 1.10, entries:[ { type:"phase2_swarm", weight: 10, maxAlive: 22 } ] },
+        { id:"gatekeeper_push",label:"Gatekeeper Push",   durationSec: 20, spawnRateMult: 0.95, entries:[ { type:"phase3_swarm", weight: 10, maxAlive: 16 } ] },
+        { id:"banner_flood",   label:"Banner Flood",      durationSec: 18, spawnRateMult: 1.20, entries:[ { type:"banner", weight: 10, maxAlive: 24 }, { type:"popup", weight: 1.1, maxAlive: 5 } ] },
+        { id:"retargeter_hunt",label:"Retargeter Hunt",   durationSec: 18, spawnRateMult: 0.90, entries:[ { type:"phase2_retargeter", weight: 3.2, maxAlive: 2 }, { type:"phase2_swarm", weight: 3.6, maxAlive: 10 } ] },
+        { id:"blackbox_escort",label:"Black Box Escort",  durationSec: 20, spawnRateMult: 0.90, entries:[ { type:"phase3_swarm", weight: 7.5, maxAlive: 14 }, { type:"phase3_elite", weight: 1.4, maxAlive: 1 } ] },
+        { id:"mixed_pressure", label:"Mixed Pressure",    durationSec: 22, spawnRateMult: 1.00, entries:[ { type:"phase3_swarm", weight: 5.0, maxAlive: 12 }, { type:"phase2_swarm", weight: 5.0, maxAlive: 12 }, { type:"phase2_retargeter", weight: 1.0, maxAlive: 2 } ] },
+      ],
     },
 
     ENEMY_CROWDING: {
@@ -1408,6 +1427,7 @@
 
       surges: JSON.parse(JSON.stringify(BALANCE.SURGES || {})),
       retargeting: JSON.parse(JSON.stringify(BALANCE.RETARGETING || {})),
+      ENDLESS: JSON.parse(JSON.stringify(BALANCE.ENDLESS || {})),
 
       sfx: { ...BALANCE.SFX, masterPreGame: BALANCE.SFX.masterPreGame ?? BALANCE.SFX.master, masterInGame: BALANCE.SFX.masterInGame ?? BALANCE.SFX.master },
       music: { ...BALANCE.MUSIC, masterPreGame: BALANCE.MUSIC.masterPreGame ?? 0.22, masterInGame: BALANCE.MUSIC.masterInGame ?? 0.89 },
@@ -1607,6 +1627,32 @@
       src.connect(hp); hp.connect(g); g.connect(this.master);
       src.start(t); src.stop(t+dur+0.02);
     }
+    _noteFreq(root='C', octave=4, semitoneOffset=0){
+      const map={C:0,'C#':1,D:2,'D#':3,E:4,F:5,'F#':6,G:7,'G#':8,A:9,'A#':10,B:11};
+      const midi=(octave+1)*12 + (map[root] ?? 0) + semitoneOffset;
+      return 440 * Math.pow(2,(midi-69)/12);
+    }
+    _shapeTone(freq, dur=0.18, opts={}){
+      if (!this.enabled) return;
+      this.ensure();
+      const attack=opts.attack ?? 0.02, decay=opts.decay ?? dur*0.65, release=opts.release ?? dur*0.45;
+      const gain=opts.gain ?? 0.08, delay=Math.max(0, opts.delay ?? 0), type=opts.type || 'triangle';
+      const t=this.ctx.currentTime + delay;
+      const stopAt=t + dur + release + 0.04;
+      const mkVoice=(wave, voiceGain, detune=0)=>{
+        const o=this.ctx.createOscillator();
+        const g=this.ctx.createGain();
+        o.type=wave; o.frequency.setValueAtTime(freq, t); if(detune) o.detune.setValueAtTime(detune,t);
+        g.gain.setValueAtTime(0.0001,t);
+        g.gain.exponentialRampToValueAtTime(Math.max(0.0001,voiceGain), t + Math.max(0.004, attack));
+        g.gain.exponentialRampToValueAtTime(Math.max(0.0001,voiceGain*0.58), t + Math.max(attack+0.01, decay));
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur + Math.max(0.02, release));
+        o.connect(g); g.connect(this.master); o.start(t); o.stop(stopAt);
+      };
+      mkVoice(type, gain);
+      if((opts.secondaryLayer ?? 0)>0){ mkVoice('square', gain*(opts.secondaryLayer*0.45), -4); }
+      if((opts.sparkle ?? 0)>0){ mkVoice('triangle', gain*(opts.sparkle*0.22), 7); }
+    }
     coin(){ this.blip(CFG.sfx.coinHz, CFG.sfx.coinDur, "square", 0.10); }
     hit(){ this.blip(220, CFG.sfx.hitDur, "triangle", 0.10); }
     death(){ this.noise(CFG.sfx.deathDur, 0.10, 2600); }
@@ -1622,8 +1668,14 @@
       this.blip(root * 1.46, 0.10, "triangle", 0.10, 0.09);
     }
     chest() {
-      this.blip(660, 0.06, "square", 0.10);
-      this.blip(880, 0.06, "square", 0.08);
+      const root='A', octave=3, gain=0.52, attack=0.023, decay=0.993, release=0.704, gap=0.141, finalLen=0.167, boost=1.28, sparkle=0.40, secondary=0.55;
+      const note = (semi)=>this._noteFreq(root, octave, semi);
+      this._shapeTone(note(7), 0.12, { type:'triangle', gain:0.070*gain, attack, decay:0.18, release, delay:0.00, sparkle:sparkle*0.55, secondaryLayer:secondary*0.4 });
+      this._shapeTone(note(12), 0.12, { type:'triangle', gain:0.082*gain, attack, decay:0.20, release, delay:gap, sparkle:sparkle*0.55, secondaryLayer:secondary*0.5 });
+      this._shapeTone(note(16), 0.13, { type:'square', gain:0.090*gain, attack, decay:0.22, release, delay:gap*2, sparkle:sparkle*0.45, secondaryLayer:secondary*0.65 });
+      const chordDelay = gap*3;
+      [12,16,19].forEach((semi,i)=> this._shapeTone(note(semi), finalLen, { type:i===0?'triangle':'square', gain:(0.082 + i*0.015)*gain*boost, attack, decay:Math.max(finalLen*0.72, 0.14), release, delay:chordDelay, sparkle:sparkle*(i===2?0.95:0.6), secondaryLayer:secondary }));
+      this._shapeTone(note(24), finalLen*0.72, { type:'triangle', gain:0.030*gain*boost, attack:0.01, decay:finalLen*0.5, release:0.30, delay:chordDelay + 0.01, sparkle:0, secondaryLayer:0 });
     }
     powerup() {
       this.blip(520, 0.06, "triangle", 0.06, 0.00);
@@ -1789,8 +1841,68 @@
 
     stop() {
       this.enabled = false;
+      this.victoryMode = false;
       if (this.timer) { clearInterval(this.timer); this.timer = null; }
+      if (this.victoryTimer) { clearInterval(this.victoryTimer); this.victoryTimer = null; }
       if (this.master) this.master.gain.value = 0.0;
+    }
+
+    _victoryTone(freq, dur=0.18, type="triangle", gain=0.08, delay=0, opts={}) {
+      if (!this.userEnabled) return;
+      this.ensure();
+      const t = this.ctx.currentTime + Math.max(0, delay);
+      const attack = opts.attack ?? 0.018;
+      const decay = opts.decay ?? Math.max(0.08, dur*0.62);
+      const release = opts.release ?? Math.max(0.12, dur*0.44);
+      const mkVoice = (wave, voiceGain, detune=0) => {
+        const o = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        o.type = wave;
+        o.frequency.setValueAtTime(freq, t);
+        if (detune) o.detune.setValueAtTime(detune, t);
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(Math.max(0.0001, voiceGain), t + Math.max(0.004, attack));
+        g.gain.exponentialRampToValueAtTime(Math.max(0.0001, voiceGain*0.62), t + Math.max(attack+0.01, decay));
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur + release);
+        o.connect(g); g.connect(this.master);
+        o.start(t); o.stop(t + dur + release + 0.04);
+      };
+      mkVoice(type, gain);
+      const secondary = opts.secondaryLayer ?? 0;
+      const sparkle = opts.sparkle ?? 0;
+      if (secondary > 0) mkVoice('square', gain*(secondary*0.42), -4);
+      if (sparkle > 0) mkVoice('triangle', gain*(sparkle*0.18), 7);
+    }
+
+    _victoryFreq(root='C', octave=4, semitoneOffset=0){
+      const map={C:0,'C#':1,D:2,'D#':3,E:4,F:5,'F#':6,G:7,'G#':8,A:9,'A#':10,B:11};
+      const midi=(octave+1)*12 + (map[root] ?? 0) + semitoneOffset;
+      return 440 * Math.pow(2,(midi-69)/12);
+    }
+
+    _scheduleVictoryPhrase(delay=0) {
+      const cfg = { root:'G', octave:3, gain:0.72, attack:0.037, decay:0.519, release:0.766, gap:0.055, finalLen:1.730, boost:2.20, sparkle:0.63, secondary:0.91 };
+      const note = (semi)=>this._victoryFreq(cfg.root, cfg.octave, semi);
+      const noteDur = 0.14;
+      this._victoryTone(note(0),  noteDur, 'triangle', 0.060*cfg.gain, delay + 0.00,                { attack:cfg.attack, decay:0.18, release:cfg.release, sparkle:cfg.sparkle*0.25, secondaryLayer:cfg.secondary*0.22 });
+      this._victoryTone(note(2),  noteDur, 'triangle', 0.070*cfg.gain, delay + cfg.gap + 0.10,      { attack:cfg.attack, decay:0.20, release:cfg.release, sparkle:cfg.sparkle*0.30, secondaryLayer:cfg.secondary*0.28 });
+      this._victoryTone(note(4),  noteDur, 'square',   0.082*cfg.gain, delay + (cfg.gap*2) + 0.22,  { attack:cfg.attack, decay:0.22, release:cfg.release, sparkle:cfg.sparkle*0.32, secondaryLayer:cfg.secondary*0.38 });
+      this._victoryTone(note(7),  noteDur, 'triangle', 0.092*cfg.gain, delay + (cfg.gap*3) + 0.34,  { attack:cfg.attack, decay:0.24, release:cfg.release, sparkle:cfg.sparkle*0.45, secondaryLayer:cfg.secondary*0.45 });
+      const finalDelay = delay + (cfg.gap*4) + 0.48;
+      [12,16,19].forEach((semi,i)=> this._victoryTone(note(semi), cfg.finalLen, i===1?'square':'triangle', (0.090 + i*0.016)*cfg.gain*cfg.boost, finalDelay, { attack:cfg.attack, decay:Math.max(cfg.finalLen*0.72, cfg.decay), release:cfg.release, sparkle:cfg.sparkle*(i===2?1.0:0.65), secondaryLayer:cfg.secondary }));
+      this._victoryTone(note(24), cfg.finalLen*0.72, 'triangle', 0.030*cfg.gain*cfg.boost, finalDelay + 0.02, { attack:0.012, decay:cfg.finalLen*0.55, release:0.38, sparkle:0, secondaryLayer:0 });
+    }
+
+    playVictoryTheme() {
+      if (!this.userEnabled) return;
+      this.ensure();
+      this.enabled = true;
+      this.victoryMode = true;
+      if (this.timer) { clearInterval(this.timer); this.timer = null; }
+      if (this.victoryTimer) { clearInterval(this.victoryTimer); this.victoryTimer = null; }
+      if (this.ctx.state === "suspended") this.ctx.resume().catch(()=>{});
+      this.master.gain.value = Math.max(CFG.music.masterPreGame ?? 0.22, 0.20);
+      this._scheduleVictoryPhrase(0.02);
     }
 
     update(dt) {
@@ -2021,7 +2133,7 @@
         g.lineWidth = 2;
         g.beginPath(); g.arc(s.x, s.y-3, this.r + 6 + Math.sin(performance.now()*0.012)*1.2, 0, Math.PI*2); g.stroke();
       }
-      g.fillStyle = (this.iFrame>0) ? "#2f6fff" : theme.text;
+      g.fillStyle = (this.iFrame>0) ? "#d62f2f" : theme.text;
       g.fillRect((s.x-5)|0, (s.y-6)|0, 10, 12);
       g.fillStyle = (theme.mode===ThemeMode.DARK) ? "#FFD7B3" : "#D6A583";
       g.fillRect((s.x-3)|0, (s.y-10)|0, 6, 5);
@@ -3329,7 +3441,7 @@
       this.r=Number(spec.r)||13; this.speed=(Number(spec.speed)||58)*rand(Number(spec.speedJitterMin||0.96), Number(spec.speedJitterMax||1.08));
       this.hp=Number(spec.hp)||34; this.maxHp=this.hp; this.touch=Number(spec.touch)||17; this.hitInterval=Number(spec.hitInterval)||0.38; this.hitCd=0;
       this.scoreOnKill=Number(spec.scoreOnKill)||18; this.coinXp=Number(spec.coinXp)||CFG.xp.coinXp; this.interceptStrength=Number(spec.interceptStrength)||0.78; this.turnRate=Number(spec.turnRate)||5.0; this.heading=rand(0,Math.PI*2);
-      this.palette = spec.palette || { shell:'#56746a', door:'#d5ead5', trim:'#1b2a28', glow:'rgba(210,255,220,0.15)' };
+      this.palette = spec.palette || { shell:'#9e6c3b', door:'#c79a63', trim:'#3a2415', glow:'rgba(194,136,76,0.16)' };
     }
     overlaps(p){ return dist2(this.x,this.y,p.x,p.y) <= (this.r+p.r)*(this.r+p.r); }
     update(dt,game){ if(this.dead){ this.updateDeath(dt); return; } const p=game.player; const lead=0.55; const tx=p.x + p.vx*lead*this.interceptStrength, ty=p.y + p.vy*lead*this.interceptStrength; const dx=tx-this.x, dy=ty-this.y; const ang=Math.atan2(dy,dx); let diff=((ang-this.heading+Math.PI*3)%(Math.PI*2))-Math.PI; this.heading += clamp(diff,-this.turnRate*dt,this.turnRate*dt); const moveMult=this.moveScale(); this.x += Math.cos(this.heading)*this.speed*moveMult*dt; this.y += Math.sin(this.heading)*this.speed*moveMult*dt; applyEnemySeparation(this,game,dt); if(this.hitCd>0) this.hitCd=Math.max(0,this.hitCd-dt); if(this.overlaps(p)&&this.hitCd<=0){ p.applyDamage(this.touch); game.sfx.hit(); this.hitCd=this.hitInterval; } }
@@ -3422,7 +3534,7 @@
   ];
 
   // ========= Game =========
-  const State = { TITLE:"title", MENU:"menu", PLAY:"play", LEVEL:"level", MOD:"mod", CHEST:"chest", DEAD:"dead", PAUSE:"pause" };
+  const State = { TITLE:"title", MENU:"menu", PLAY:"play", LEVEL:"level", MOD:"mod", CHEST:"chest", DEAD:"dead", VICTORY:"victory", PAUSE:"pause" };
 
   class Game {
     constructor(surface, input) {
@@ -3469,6 +3581,20 @@
       this.spawnAcc=0;
       this.popupAcc=0;
       this.popupSpawnCount = 0;
+      this.victoryRoi = 0;
+      this.victoryAt = 0;
+      this.endlessMode = false;
+      this.endlessTime = 0;
+      this.endlessWaveTime = 0;
+      this.endlessWaveIndex = 0;
+      this.endlessWave = null;
+      this.lastEndlessWaveId = null;
+      this.endlessMode = false;
+      this.endlessTime = 0;
+      this.endlessWaveTime = 0;
+      this.endlessWaveIndex = 0;
+      this.endlessWave = null;
+      this.lastEndlessWaveId = null;
 
       this.level=1;
       this.xp=0;
@@ -3502,10 +3628,18 @@
 
       this.overlayAnim=1; // for menu
       this._pendingModifierTrackAdvance = null;
+      this.victoryRoi = 0;
+      this.victoryAt = 0;
+      this.endlessMode = false;
+      this.endlessTime = 0;
+      this.endlessWaveTime = 0;
+      this.endlessWaveIndex = 0;
+      this.endlessWave = null;
+      this.lastEndlessWaveId = null;
     }
 
     updateAudioMix() {
-      const pregame = (this.state === State.TITLE || this.state === State.MENU);
+      const pregame = (this.state === State.TITLE || this.state === State.MENU || this.state === State.VICTORY);
       const mixMode = pregame ? "pregame" : "gameplay";
       this.sfx.setMixMode(mixMode);
       this.music.setMixMode(mixMode);
@@ -3571,6 +3705,69 @@
 
     addScore(basePoints) { this.score += Math.floor(basePoints * this.scoreMult); }
     advanceEnemySet() { this.enemySetIndex++; this.scoreMult *= 1.5; }
+
+    getEndlessWaveDef() {
+      return this.endlessWave || null;
+    }
+
+    pickNextEndlessWave() {
+      const waves = CFG.ENDLESS?.waves || [];
+      if (!waves.length) { this.endlessWave = null; return null; }
+      let pool = waves;
+      if (this.lastEndlessWaveId && waves.length > 1) {
+        const filtered = waves.filter(w => w && w.id !== this.lastEndlessWaveId);
+        if (filtered.length) pool = filtered;
+      }
+      const picked = pool[randi(0, pool.length - 1)] || waves[0];
+      this.endlessWave = picked;
+      this.lastEndlessWaveId = picked?.id || null;
+      this.endlessWaveTime = 0;
+      this.endlessWaveIndex = (this.endlessWaveIndex || 0) + 1;
+      return picked;
+    }
+
+    startEndlessMode() {
+      this.endlessMode = true;
+      this.endlessTime = 0;
+      this.endlessWaveTime = 0;
+      this.endlessWaveIndex = 0;
+      this.endlessWave = null;
+      this.lastEndlessWaveId = null;
+      this.bossActive = false;
+      this.lull = false;
+      this.lullUntil = 0;
+      this.phaseBossSpawned = true;
+      this.nextBossAt = Infinity;
+      this.dooBossGroups = [];
+      this.spawnAcc = 0;
+      if (CFG.ENDLESS?.clearHostilesOnStart) {
+        this.enemies.length = 0;
+        this.enemyProjectiles.length = 0;
+        this.enemyMarkers.length = 0;
+        this.gardenPatches.length = 0;
+        this.gardenWalls.length = 0;
+        this.bossGardenWalls.length = 0;
+        this.surgeArcs.length = 0;
+        this.fields = this.fields.filter(f => f && f.kind !== 'garden');
+      }
+      if (CFG.ENDLESS?.clearProjectilesOnStart) {
+        this.bullets.length = 0;
+        this._delayedShots.length = 0;
+      }
+      this.pickNextEndlessWave();
+      // Seed the first endless pack immediately so the mode starts visibly active,
+      // even if spawnAcc was previously invalid or the player resumes from a quiet board.
+      for (let i = 0; i < 4; i++) this.spawnEndlessEnemy();
+    }
+
+    updateEndlessWave(dt) {
+      if (!this.endlessMode) return;
+      this.endlessTime += dt;
+      this.endlessWaveTime += dt;
+      const wave = this.getEndlessWaveDef() || this.pickNextEndlessWave();
+      const duration = Math.max(6, Number(wave?.durationSec) || 20);
+      if (this.endlessWaveTime >= duration) this.pickNextEndlessWave();
+    }
 
     getCurrentPhaseDef() {
       const phases = CFG.enemies.phases || [];
@@ -3732,7 +3929,35 @@
       return enemy;
     }
 
+    getEndlessScaleMultipliers() {
+      const tMin = Math.max(0, Number(this.endlessTime) || 0) / 60;
+      return {
+        hp: 1 + tMin * (Number(CFG.ENDLESS?.hpRampPerMin) || 0),
+        speed: 1 + tMin * (Number(CFG.ENDLESS?.speedRampPerMin) || 0),
+        spawn: 1 + tMin * (Number(CFG.ENDLESS?.spawnRampPerMin) || 0),
+      };
+    }
+
+    spawnEndlessEnemy() {
+      const wave = this.getEndlessWaveDef() || this.pickNextEndlessWave();
+      const entries = Array.isArray(wave?.entries) ? wave.entries.filter(entry => {
+        const maxAlive = Number(entry?.maxAlive || 0);
+        if (!(maxAlive > 0)) return true;
+        return this.countAliveType(entry.type) < maxAlive;
+      }) : [];
+      const entry = this.pickWeightedSpawnEntry(entries);
+      if (!entry) return false;
+      const scale = this.getEndlessScaleMultipliers();
+      const baseSpec = this.getEnemySpec(entry.type) || {};
+      const specOverrides = {
+        hp: (Number(baseSpec.hp) || 1) * scale.hp * (Number(entry.hpMult) || 1),
+        speed: (Number(baseSpec.speed) || 0) * scale.speed * (Number(entry.speedMult) || 1),
+      };
+      return !!this.spawnEnemyType(entry.type, { specOverrides, source: 'endless' });
+    }
+
     spawnAmbientEnemy() {
+      if (this.endlessMode) return this.spawnEndlessEnemy();
       const entries = this.phasePoolEntries("ambient").filter(entry => {
         const maxAlive = Number(entry?.maxAlive || 0);
         if (!(maxAlive > 0)) return true;
@@ -3744,6 +3969,7 @@
     }
 
     spawnScheduledElites() {
+      if (this.endlessMode) return;
       const phase = this.getCurrentPhaseDef();
       if (!phase || !Array.isArray(phase.elite)) return;
       for (let i = 0; i < phase.elite.length; i++) {
@@ -3915,6 +4141,7 @@
     }
 
     updateLowPopulationSurges(dt) {
+      if (this.endlessMode) return;
       const phase = this.getCurrentPhaseDef();
       const rules = phase?.surges?.lowPopulationTriggers || [];
       if (!rules.length || !this.surgesAllowed("lowPop")) return;
@@ -4022,6 +4249,7 @@
     }
 
     startRun(hero) {
+      this.music.stop();
       this.time=0;
       this.enemies.length=0;
       this.bullets.length=0;
@@ -4044,6 +4272,8 @@
       this.spawnAcc=0;
       this.popupAcc=0;
       this.popupSpawnCount = 0;
+      this.victoryRoi = 0;
+      this.victoryAt = 0;
 
       this.level=1;
       this.xp=0;
@@ -6111,6 +6341,7 @@
       if(this.state===State.TITLE) return this.updateTitle(dt);
       if(this.state===State.MENU) return this.updateMenu(dt);
       if(this.state===State.DEAD) return this.updateDead(dt);
+      if(this.state===State.VICTORY) return this.updateVictory(dt);
       if(this.state===State.LEVEL) return this.updateLevel(dt);
       if(this.state===State.MOD) return this.updateMod(dt);
       if(this.state===State.CHEST) return this.updateChest(dt);
@@ -6218,31 +6449,92 @@
       if(this.input.mouse.clicked) this.state=State.MENU;
     }
 
+    victoryHeroRect(){ return { x: 96, y: 176, w: 128, h: 28 }; }
+    victoryContinueRect(){ return { x: 256, y: 176, w: 128, h: 28 }; }
+
+    enterVictory() {
+      this.victoryRoi = this.score;
+      this.victoryAt = this.time;
+      this.state = State.VICTORY;
+      this.setPaused(false);
+      this.bossActive = false;
+      this.lull = false;
+      this.lullUntil = 0;
+      this.nextBossAt = Infinity;
+      this.phaseBossSpawned = true;
+      this.enemyProjectiles.length = 0;
+      this.enemyMarkers.length = 0;
+      this.surgeArcs.length = 0;
+      this.dooBossGroups = [];
+      this.gardenPatches = this.gardenPatches.filter(g => g && !g.boss);
+      this.gardenWalls.length = 0;
+      this.bossGardenWalls.length = 0;
+      this.music.playVictoryTheme();
+    }
+
+    updateVictory(dt) {
+      this.updateTopRightButtons();
+      const m=this.surf.mouseToLogical(this.input);
+      const heroRect=this.victoryHeroRect();
+      const contRect=this.victoryContinueRect();
+      const clickedHero = this.input.mouse.clicked && m.x>=heroRect.x&&m.x<=heroRect.x+heroRect.w&&m.y>=heroRect.y&&m.y<=heroRect.y+heroRect.h;
+      const clickedContinue = this.input.mouse.clicked && m.x>=contRect.x&&m.x<=contRect.x+contRect.w&&m.y>=contRect.y&&m.y<=contRect.y+contRect.h;
+      if (clickedHero) {
+        this.music.stop();
+        this.state = State.MENU;
+        this.sfx.ui();
+        return;
+      }
+      if (clickedContinue) {
+        this.music.stop();
+        this.startEndlessMode();
+        if (this.sfx.userEnabled) this.music.start();
+        this.state = State.PLAY;
+        this.sfx.ui();
+        return;
+      }
+      if (this.input.pressedOnce("enter", this._edge)) {
+        this.music.stop();
+        this.startEndlessMode();
+        if (this.sfx.userEnabled) this.music.start();
+        this.state = State.PLAY;
+      }
+    }
+
     updatePlay(dt) {
       this.updateTopRightButtons();
       this.time += dt;
       this.phaseTime += dt;
 
-      const currentBossAt = Number.isFinite(this.nextBossAt) ? this.nextBossAt : Infinity;
-      if(!this.bossActive && !this.phaseBossSpawned && !this.lull && this.phaseTime >= currentBossAt - CFG.bossPacing.lullLeadSec) {
-        this.lull = true;
-        this.lullUntil = this.phaseTime - CFG.bossPacing.lullLeadSec + CFG.bossPacing.lullGapSec + (currentBossAt - CFG.bossPacing.lullGapSec);
-        this.music.onLullStart();
-      }
-      if(this.lull && this.phaseTime >= this.lullUntil) this.lull=false;
+      if (this.endlessMode) {
+        this.updateEndlessWave(dt);
+      } else {
+        const currentBossAt = Number.isFinite(this.nextBossAt) ? this.nextBossAt : Infinity;
+        if(!this.bossActive && !this.phaseBossSpawned && !this.lull && this.phaseTime >= currentBossAt - CFG.bossPacing.lullLeadSec) {
+          this.lull = true;
+          this.lullUntil = this.phaseTime - CFG.bossPacing.lullLeadSec + CFG.bossPacing.lullGapSec + (currentBossAt - CFG.bossPacing.lullGapSec);
+          this.music.onLullStart();
+        }
+        if(this.lull && this.phaseTime >= this.lullUntil) this.lull=false;
 
-      if(!this.bossActive && !this.phaseBossSpawned && this.phaseTime >= currentBossAt) {
-        this.spawnPhaseBoss();
-      }
+        if(!this.bossActive && !this.phaseBossSpawned && this.phaseTime >= currentBossAt) {
+          this.spawnPhaseBoss();
+        }
 
-      this.updateLowPopulationSurges(dt);
+        this.updateLowPopulationSurges(dt);
+      }
 
       this.player.invuln = !!this.dev.invulnerable;
       this.player.update(dt, this.input);
       this.handlePlayerGardenInteractions(dt);
       this.cam.update(dt, this.player.x, this.player.y);
 
-      const spawnPerSec = CFG.enemies.basePerSec + (this.time/60)*CFG.enemies.rampPerMin;
+      let spawnPerSec = CFG.enemies.basePerSec + (this.time/60)*CFG.enemies.rampPerMin;
+      if (this.endlessMode) {
+        const wave = this.getEndlessWaveDef() || this.pickNextEndlessWave();
+        const scale = this.getEndlessScaleMultipliers();
+        spawnPerSec = (Number(CFG.ENDLESS?.basePerSec) || spawnPerSec) * (Number(wave?.spawnRateMult) || 1) * scale.spawn;
+      }
       if(!this.lull) this.spawnAcc += dt * spawnPerSec;
       while(this.spawnAcc>=1 && this.enemies.length < CFG.enemies.softCap){
         this.spawnAcc -= 1;
@@ -6345,7 +6637,7 @@
         }
       }
 
-      if(this.bossActive && !bossStillAlive){
+      if(!this.endlessMode && this.bossActive && !bossStillAlive){
         for (const gp of this.gardenPatches) if (gp.boss) gp.life = 0;
         for (const wall of this.bossGardenWalls) if (wall && !wall.dead) { wall.dead = true; wall.deathT = 1; }
         this.bossGardenWalls = [];
@@ -6356,14 +6648,15 @@
         const hasNextPhase = this.phaseIndex < phases.length - 1;
         if (hasNextPhase) {
           this.advancePhase();
+          this.lull=true;
+          this.lullUntil=this.phaseTime+CFG.bossPacing.postBossLullSec;
+          this.music.onLullStart();
         } else {
           this.phaseBossSpawned = true;
           this.nextBossAt = Infinity;
+          this.enterVictory();
+          return;
         }
-
-        this.lull=true;
-        this.lullUntil=this.phaseTime+CFG.bossPacing.postBossLullSec;
-        this.music.onLullStart();
       }
 
       for(let i=this.chests.length-1;i>=0;i--){
@@ -6479,6 +6772,7 @@
       if(this.state===State.CHEST) this.drawChoiceOverlay(g, "TREASURE CHEST", "Pick one weapon", this.chestChoices);
       if(this.state===State.PAUSE) this.drawPauseOverlay(g);
       if(this.state===State.DEAD)  this.drawDeadOverlay(g);
+      if(this.state===State.VICTORY) this.drawVictoryOverlay(g);
 
       this.surf.present();
     }
@@ -6662,6 +6956,10 @@
       } else if (activeBoss?.titleText) {
         g.fillStyle=this.theme.text2;
         g.fillText(activeBoss.titleText, x, y+36);
+      } else if (this.endlessMode) {
+        g.fillStyle = this.theme.text2;
+        const waveLabel = this.getEndlessWaveDef()?.label || "Endless";
+        g.fillText(`${CFG.ENDLESS?.waveLabelPrefix || "Endless:"} ${waveLabel}`, x, y+36);
       }
 
       const mm=Math.floor(this.time/60);
@@ -6669,6 +6967,11 @@
       g.fillStyle=this.theme.text2;
       g.fillText(`Time: ${mm}:${ss}`, CFG.logicalW-122, 40);
       g.fillText(`Score: ${this.score}`, CFG.logicalW-122, 54);
+      if (this.endlessMode) {
+        const em = Math.floor(this.endlessTime/60);
+        const es = Math.floor(this.endlessTime%60).toString().padStart(2,"0");
+        g.fillText(`Endless: ${em}:${es}`, CFG.logicalW-122, 68);
+      }
 
       const bx=12, by=CFG.logicalH-18, bw=320, bh=6;
       const xt=this.xp/this.xpNeed;
@@ -6956,11 +7259,54 @@
       g.fillText("RUN OVER", 18, 52);
       g.font=CFG.ui.font;
       g.fillStyle=this.theme.text;
-      g.fillText("Your spend got… optimized by the forces of chaos.", 18, 78);
+      g.fillText("Campaign over...the ads drained your budget. Try again?", 18, 78);
       g.fillStyle=this.theme.text2;
       g.fillText("Click to return to hero select.", 18, 98);
       g.fillStyle=this.theme.text;
       g.fillText(`Score: ${this.score}`, 18, 124);
+      this.drawTopRightControls(g);
+    }
+
+    drawVictoryButton(g, rect, label, hover=false) {
+      g.fillStyle = hover ? this.theme.btnH : this.theme.panel;
+      g.fillRect(rect.x, rect.y, rect.w, rect.h);
+      g.fillStyle = this.theme.border;
+      g.fillRect(rect.x, rect.y, rect.w, 1); g.fillRect(rect.x, rect.y + rect.h - 1, rect.w, 1);
+      g.fillRect(rect.x, rect.y, 1, rect.h); g.fillRect(rect.x + rect.w - 1, rect.y, 1, rect.h);
+      g.font = CFG.ui.font;
+      g.fillStyle = this.theme.text;
+      const tw = g.measureText(label).width;
+      g.fillText(label, Math.round(rect.x + (rect.w - tw) / 2), rect.y + 18);
+    }
+
+    drawVictoryOverlay(g) {
+      g.fillStyle=(this.themeMode===ThemeMode.DARK) ? "rgba(0,0,0,0.68)" : "rgba(255,255,255,0.84)";
+      g.fillRect(0,0,CFG.logicalW,CFG.logicalH);
+
+      const panel = { x: 58, y: 44, w: 364, h: 178 };
+      g.fillStyle = this.theme.panel;
+      g.fillRect(panel.x, panel.y, panel.w, panel.h);
+      g.fillStyle = this.theme.border;
+      g.fillRect(panel.x, panel.y, panel.w, 1); g.fillRect(panel.x, panel.y + panel.h - 1, panel.w, 1);
+      g.fillRect(panel.x, panel.y, 1, panel.h); g.fillRect(panel.x + panel.w - 1, panel.y, 1, panel.h);
+
+      g.font = CFG.ui.title;
+      g.fillStyle = "#ffd24a";
+      g.fillText("VICTORY", panel.x + 16, panel.y + 28);
+      g.font = CFG.ui.font;
+      g.fillStyle = this.theme.text;
+      this.drawWrappedText(g, "You did it! You're a partnerships champion.", panel.x + 16, panel.y + 54, panel.w - 32, 14);
+      g.fillStyle = this.theme.text2;
+      g.fillText(`Campaign ROI: ${this.victoryRoi}`, panel.x + 16, panel.y + 96);
+      g.fillText("Choose what to do next.", panel.x + 16, panel.y + 118);
+
+      const m = this.surf.mouseToLogical(this.input);
+      const heroRect = this.victoryHeroRect();
+      const contRect = this.victoryContinueRect();
+      const hoverHero = m.x>=heroRect.x&&m.x<=heroRect.x+heroRect.w&&m.y>=heroRect.y&&m.y<=heroRect.y+heroRect.h;
+      const hoverCont = m.x>=contRect.x&&m.x<=contRect.x+contRect.w&&m.y>=contRect.y&&m.y<=contRect.y+contRect.h;
+      this.drawVictoryButton(g, heroRect, "Hero Select", hoverHero);
+      this.drawVictoryButton(g, contRect, "Continue Run", hoverCont);
       this.drawTopRightControls(g);
     }
 
