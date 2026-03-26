@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Adpocalypse Survivor — Build v0.63j</title>
+  <title>Adpocalypse Survivor — Build v0.55b</title>
     <style>
     :root { color-scheme: dark; }
     html, body { margin:0; padding:0; height:100%; background:#000; overflow:hidden; }
@@ -165,7 +165,7 @@
     POWERUPS: {
       enabled: true,
       normalDropChance: 0.020,
-      eliteDropChance: 0.30,
+      eliteDropChance: 0.40,
       bossDropChance: 0.65,
       pickupRadius: 11,
       bobSpeed: 4.0,
@@ -232,18 +232,18 @@
       choices: 2,
       overlapBonusPerExtra: 0.50,
       spawnWeights: {
-        nearEnemy: 0.50,
-        nearPlayer: 0.30,
-        random: 0.20,
+        nearEnemy: 0.30,
+        nearPlayer: 0.70,
+        random: 0.00,
       },
       base: {
         fieldsPerCast: 1,
         radiusMult: 1.0,
-        lifeMult: 1.0,
-        dmgMult: 1.0,
+        lifeMult: 1.1,
+        dmgMult: 1.1,
         cooldownMult: 1.0,
-        nearEnemyRadius: 28,
-        nearPlayerRadius: 72,
+        nearEnemyRadius: 20,
+        nearPlayerRadius: 30,
         pulseInterval: 0.95,
         pulseFlashSec: 0.18,
       },
@@ -3530,6 +3530,7 @@
     { id:"affiliate", name:"Affiliate Manager", subtitle:"Starts with Performance", maxBudget:100, speedMult:1.00, startWeapon:"performance" },
     { id:"creator",   name:"Creator Manager",  subtitle:"Starts with Creator",     maxBudget:100,  speedMult:1.03, startWeapon:"creator" },
     { id:"advocate",  name:"Referral Marketer",subtitle:"Starts with Advocate",    maxBudget:100, speedMult:0.98, startWeapon:"advocate" },
+    { id:"cmo",       name:"CMO",              subtitle:"Locked (later build)",   maxBudget:140, speedMult:1.00, startWeapon:"performance", locked:true },
   ];
 
   // ========= Game =========
@@ -6369,7 +6370,6 @@
       const m=this.surf.mouseToLogical(this.input);
       if(this.input.mouse.clicked){
         const cards=this.menuCards();
-      const boxYOffset = 8;
         for(let i=0;i<cards.length;i++){
           const r=cards[i];
           if(m.x>=r.x&&m.x<=r.x+r.w&&m.y>=r.y&&m.y<=r.y+r.h){
@@ -7126,7 +7126,6 @@
       g.font=CFG.ui.font;
 
       const cards=this.menuCards();
-      const boxYOffset = 10;
       for(let i=0;i<HEROES.length;i++){
         const hero=HEROES[i];
         const r=cards[i];
@@ -7137,18 +7136,18 @@
         g.fillStyle = locked ? "rgba(255,255,255,0.03)"
           : sel ? (hover ? this.theme.btnH : this.theme.btn)
           : (hover ? "rgba(255,255,255,0.10)" : this.theme.panel);
-        g.fillRect(r.x,r.y+boxYOffset,r.w,r.h);
+        g.fillRect(r.x,r.y,r.w,r.h);
 
         g.fillStyle=this.theme.border;
-        g.fillRect(r.x,r.y+boxYOffset,r.w,1); g.fillRect(r.x,r.y+boxYOffset+r.h-1,r.w,1);
-        g.fillRect(r.x,r.y+boxYOffset,1,r.h); g.fillRect(r.x+r.w-1,r.y+boxYOffset,1,r.h);
+        g.fillRect(r.x,r.y,r.w,1); g.fillRect(r.x,r.y+r.h-1,r.w,1);
+        g.fillRect(r.x,r.y,1,r.h); g.fillRect(r.x+r.w-1,r.y,1,r.h);
 
         g.fillStyle = locked ? this.theme.text2 : this.theme.text;
-        g.fillText(hero.name + (locked ? " (Locked)" : ""), r.x+10, r.y+26);
+        g.fillText(hero.name + (locked ? " (Locked)" : ""), r.x+10, r.y+20);
 
         g.fillStyle = this.theme.text2;
-        g.fillText(hero.subtitle, r.x+10, r.y+44);
-        g.fillText(`Budget: ${hero.maxBudget}`, r.x+10, r.y+62);
+        g.fillText(hero.subtitle, r.x+10, r.y+38);
+        g.fillText(`Budget: ${hero.maxBudget}`, r.x+10, r.y+56);
       }
 
       const b=this.menuPlayRect();
@@ -7203,11 +7202,11 @@
         const hover=m.x>=r.x&&m.x<=r.x+r.w&&m.y>=r.y&&m.y<=r.y+r.h;
 
         g.fillStyle = hover ? this.theme.btnH : this.theme.panel;
-        g.fillRect(r.x,r.y+boxYOffset,r.w,r.h);
+        g.fillRect(r.x,r.y,r.w,r.h);
 
         g.fillStyle=this.theme.border;
-        g.fillRect(r.x,r.y+boxYOffset,r.w,1); g.fillRect(r.x,r.y+boxYOffset+r.h-1,r.w,1);
-        g.fillRect(r.x,r.y+boxYOffset,1,r.h); g.fillRect(r.x+r.w-1,r.y+boxYOffset,1,r.h);
+        g.fillRect(r.x,r.y,r.w,1); g.fillRect(r.x,r.y+r.h-1,r.w,1);
+        g.fillRect(r.x,r.y,1,r.h); g.fillRect(r.x+r.w-1,r.y,1,r.h);
 
         const isCard = (u.kind === "upgrade" || u.kind === "modifier" || u.kind === "weapon_upgrade" || u.kind === "advocate_stat_choice" || u.kind === "advocate_shape_offer" || u.kind === "advocate_effect_offer" || u.kind === "creator_strategy_offer" || u.kind === "creator_behavior_offer");
         const titleFont = isCard ? CFG.ui.upTitle : CFG.ui.font;
@@ -7527,7 +7526,7 @@
     }
 
     menuCards(){
-      const x=18,y=62,w=CFG.logicalW-36,h=60,gap=8;
+      const x=18,y=70,w=CFG.logicalW-36,h=66,gap=8;
       return HEROES.map((_,i)=>({x,y:y+i*(h+gap),w,h}));
     }
 
