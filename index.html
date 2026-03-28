@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Adpocalypse Survivor — Build v0.63n</title>
+  <title>Adpocalypse Survivor — Build v0.65d</title>
     <style>
     :root { color-scheme: dark; }
     html, body { margin:0; padding:0; height:100%; background:#000; overflow:hidden; }
@@ -164,14 +164,14 @@
 
     POWERUPS: {
       enabled: true,
-      normalDropChance: 0.020,
+      normalDropChance: 0.030,
       eliteDropChance: 0.30,
       bossDropChance: 0.65,
       pickupRadius: 11,
       bobSpeed: 4.0,
       bobAmt: 2,
       heal: {
-        dropWeight: 1.30,
+        dropWeight: 1.40,
         healAmount: 25,
       },
       magnet: {
@@ -212,9 +212,9 @@
       defs: {
         performance: {
           perf_shotgun: { id:"perf_shotgun", name:"Shotgun Blast", desc:"Fire a cone of pellets.", flavor:"Sometimes you need a broader outreach strategy.", weight:1 },
-          perf_pierce: { id:"perf_pierce", name:"Piercing Insights", desc:"Shots pierce through enemies in a line.", flavor:"A good partner program cuts through the noise.", weight:1 },
-          perf_burst: { id:"perf_burst", name:"Burst Campaign", desc:"Fire a quick 3-shot burst.", flavor:"Three messages are better than one.", weight:1 },
-          perf_ricochet: { id:"perf_ricochet", name:"Chained Actions", desc:"Shots bounce to another nearby enemy.", flavor:"One click leads to another.", weight:1 },
+          perf_pierce: { id:"perf_pierce", name:"Piercing Insights", desc:"Shots pass through enemies.", flavor:"Cut through the noise.", weight:1 },
+          perf_burst: { id:"perf_burst", name:"Burst Campaign", desc:"Fire a quick 3-shot burst.", flavor:"Ping 'em. Ping 'em good.", weight:1 },
+          perf_ricochet: { id:"perf_ricochet", name:"Chained Actions", desc:"Shots bounce to another nearby enemy.", flavor:"Bouncing down the funnel.", weight:1 },
         },
         creator: {},
         advocate: {
@@ -232,9 +232,9 @@
       choices: 2,
       overlapBonusPerExtra: 0.50,
       spawnWeights: {
-        nearEnemy: 0.50,
-        nearPlayer: 0.30,
-        random: 0.20,
+        nearEnemy: 0.00,
+        nearPlayer: 1.00,
+        random: 1.00,
       },
       base: {
         fieldsPerCast: 1,
@@ -256,10 +256,12 @@
           fieldsPerCast: 1,
           radiusMult: 1.75,
           lifeMult: 1.40,
-          dmgMult: 1.3,
+          dmgMult: 2.00,
           cooldownMult: 1.18,
           nearEnemyRadius: 20,
           nearPlayerRadius: 56,
+          spawnMinDist: 18,
+          spawnMaxDist: 64,
           pulseIntervalMult: 1.12,
         },
         micro: {
@@ -267,14 +269,16 @@
           name: "Micro",
           desc: "More, smaller fields with faster cadence.",
           flavor: "Scale through volume.",
-          fieldsPerCast: 3,
+          fieldsPerCast: 1,
           radiusMult: 0.68,
-          lifeMult: 0.72,
-          dmgMult: 0.78,
-          cooldownMult: 0.74,
+          lifeMult: 0.84,
+          dmgMult: 0.88,
+          cooldownMult: 0.28,
           nearEnemyRadius: 36,
           nearPlayerRadius: 96,
-          pulseIntervalMult: 0.82,
+          spawnMinDist: 2,
+          spawnMaxDist: 72,
+          pulseIntervalMult: 0.42,
         },
       },
       behaviors: {
@@ -314,7 +318,7 @@
             childDistanceMult: 0.45,
             rippleAngleJitter: 0.18,
             rippleDriftSpeed: 18,
-            childSeekEnemySpeed: 22,
+            childSeekEnemySpeed: 52,
             childSeekEnemyRadius: 110,
             linkLife: 0.14,
             pulseIntervalMult: 0.92,
@@ -332,10 +336,12 @@
             pulseIntervalMult: 0.82,
           },
           micro: {
-            moveTowardPlayerSpeed: 92,
-            lifeMult: 0.82,
+            moveTowardPlayerSpeed: 32,
+            lifeMult: 1.34,
             radiusMult: 0.95,
             pulseIntervalMult: 0.86,
+            spawnMinDist: 20,
+            spawnMaxDist: 82,
           },
         },
         spicy: {
@@ -481,7 +487,7 @@
           maxOrbitals: 3,
           rangeUpgradeMult: 1.14,
           speedUpgradeMult: 1.10,
-          contactHitDamage: 6,
+          contactHitDamage: 12,
           contactHitCooldown: 0.30,
           dpsPerSecond: 20,
           effectPowerMult: 0.92,
@@ -989,19 +995,19 @@
     // Gameplay multipliers used by applyUpgrade()
     payouts_dmgMult: 1.12,
     automate: {
-      perfFire: 1.12,
-      perfShotSpeed: 1.10,
-      creatorFreq: 1.12,
-      advocateSpin: 1.12,
+      perfFire: 1.15,
+      perfShotSpeed: 1.15,
+      creatorFreq: 1.15,
+      advocateSpin: 1.15,
     },
     reach: {
-      perfRange: 1.12,
-      creatorRadius: 1.10,
-      advocateSize: 1.08,
-      advocateOrbitR: 1.08,
+      perfRange: 1.15,
+      creatorRadius: 1.15,
+      advocateSize: 1.10,
+      advocateOrbitR: 1.12,
     },
-    agility_speed: 1.07,
-    tracking_radius: 1.20,
+    agility_speed: 1.12,
+    tracking_radius: 1.50,
 
     // Card rendering knobs
     card: {
@@ -1081,7 +1087,7 @@
     slot2: 1.25,
     slot3: 1.5,
     catchupBonus: 1.5,
-    catchupUntilStep: 3,
+    catchupUntilStep: 6,
   },
 
   WEAPON_UPGRADE_TRACKS: {
@@ -1156,7 +1162,7 @@
   SFX: {
       enabledByDefault: true,
       master: 0.85,
-      masterPreGame: 0.40,
+      masterPreGame: 0.45,
       masterInGame: 0.85,
       coinHz: 650,
       coinDur: 0.06,
@@ -1169,8 +1175,8 @@
     },
 
     MUSIC: {
-      masterPreGame: 0.22,
-      masterInGame: 0.89,
+      masterPreGame: 0.32,
+      masterInGame: 0.95,
       defaultBpm: 140,
       maxBpm: 150,
       bpmBuckets: [
@@ -2097,6 +2103,8 @@
       this.weaponUpgradeTiers = { performance: 0, creator: 0, advocate: 0 };
       this.shieldHits = 0;
       this.magnetTimer = 0;
+      this.hurtFlash = 0;
+      this.shieldFlash = 0;
       this.facingX = 1;
       this.facingY = 0;
     }
@@ -2106,10 +2114,12 @@
       if (this.shieldHits > 0) {
         this.shieldHits = Math.max(0, this.shieldHits - 1);
         this.iFrame = Math.max(this.iFrame, CFG.player.iFrame * 0.65);
+        this.shieldFlash = 0.32;
         return false;
       }
       this.budget = clamp(this.budget-n,0,this.maxBudget);
       this.iFrame = CFG.player.iFrame;
+      this.hurtFlash = Math.max(this.hurtFlash, CFG.player.iFrame);
       return true;
     }
     update(dt, input) {
@@ -2124,16 +2134,25 @@
         this.facingY = this.vy / d;
       }
       if(this.iFrame>0) this.iFrame=Math.max(0,this.iFrame-dt);
+      if(this.hurtFlash>0) this.hurtFlash=Math.max(0,this.hurtFlash-dt);
+      if(this.shieldFlash>0) this.shieldFlash=Math.max(0,this.shieldFlash-dt);
       if(this.magnetTimer>0) this.magnetTimer=Math.max(0,this.magnetTimer-dt);
     }
     draw(g, cam, theme) {
       const s=cam.w2s(this.x,this.y);
-      if (this.shieldHits > 0) {
-        g.strokeStyle = theme.mode===ThemeMode.DARK ? 'rgba(120,205,255,0.92)' : 'rgba(44,106,214,0.92)';
-        g.lineWidth = 2;
+      if (this.shieldHits > 0 || this.shieldFlash > 0) {
+        const flashA = this.shieldFlash > 0 ? clamp(this.shieldFlash / 0.32, 0, 1) : 0;
+        g.strokeStyle = this.shieldFlash > 0
+          ? `rgba(255,246,190,${0.55 + 0.45*flashA})`
+          : (theme.mode===ThemeMode.DARK ? 'rgba(120,205,255,0.92)' : 'rgba(44,106,214,0.92)');
+        g.lineWidth = this.shieldFlash > 0 ? 3 : 2;
         g.beginPath(); g.arc(s.x, s.y-3, this.r + 6 + Math.sin(performance.now()*0.012)*1.2, 0, Math.PI*2); g.stroke();
+        if (this.shieldFlash > 0) {
+          g.fillStyle = `rgba(255,245,180,${0.10 + 0.20*flashA})`;
+          g.beginPath(); g.arc(s.x, s.y-3, this.r + 7, 0, Math.PI*2); g.fill();
+        }
       }
-      g.fillStyle = (this.iFrame>0) ? "#d62f2f" : theme.text;
+      g.fillStyle = (this.hurtFlash>0) ? "#d62f2f" : theme.text;
       g.fillRect((s.x-5)|0, (s.y-6)|0, 10, 12);
       g.fillStyle = (theme.mode===ThemeMode.DARK) ? "#FFD7B3" : "#D6A583";
       g.fillRect((s.x-3)|0, (s.y-10)|0, 6, 5);
@@ -2243,8 +2262,8 @@
         this.didBurst = true;
         const p = game.player;
         if (p && dist2(this.x,this.y,p.x,p.y) <= (this.r + p.r)*(this.r + p.r)) {
-          p.applyDamage(this.dmg);
-          game.sfx.hit();
+          const took = p.applyDamage(this.dmg);
+          if (took) game.sfx.hit(); else game.sfx.shieldBlock();
         }
         game.fieldBursts.push({ x:this.x, y:this.y, color:"warn", life:0.24, maxLife:0.24, radius:this.r + 10 });
         this.dead = true;
@@ -2693,8 +2712,8 @@
       applyEnemySeparation(this, game, dt);
       if(this.hitCd>0) this.hitCd=Math.max(0,this.hitCd-dt);
       if(this.overlaps(p) && this.hitCd<=0){
-        p.applyDamage(this.touch);
-        game.sfx.hit();
+        const took = p.applyDamage(this.touch);
+        if (took) game.sfx.hit(); else game.sfx.shieldBlock();
         this.hitCd=this.hitInterval;
       }
     }
@@ -2772,8 +2791,8 @@
 
       if(this.spawnedAt < this.warn){
         if(this.overlaps(p) && this.hitCd<=0){
-          p.applyDamage(this.touch);
-          game.sfx.hit();
+          const took = p.applyDamage(this.touch);
+        if (took) game.sfx.hit(); else game.sfx.shieldBlock();
           this.hitCd=0.5;
         }
         if(this.hitCd>0) this.hitCd=Math.max(0,this.hitCd-dt);
@@ -2797,8 +2816,8 @@
 
       if(this.hitCd>0) this.hitCd=Math.max(0,this.hitCd-dt);
       if(this.overlaps(p) && this.hitCd<=0){
-        p.applyDamage(this.touch);
-        game.sfx.hit();
+        const took = p.applyDamage(this.touch);
+        if (took) game.sfx.hit(); else game.sfx.shieldBlock();
         this.hitCd=this.hitInterval;
       }
     }
@@ -2852,7 +2871,7 @@
       this.y += (ny + py*0.28*wobble) * this.speed * moveMult * dt;
       applyEnemySeparation(this, game, dt);
       if(this.hitCd>0) this.hitCd=Math.max(0,this.hitCd-dt);
-      if(this.overlaps(p) && this.hitCd<=0){ p.applyDamage(this.touch); game.sfx.hit(); this.hitCd=this.hitInterval; }
+      if(this.overlaps(p) && this.hitCd<=0){ const took = p.applyDamage(this.touch); if (took) game.sfx.hit(); else game.sfx.shieldBlock(); this.hitCd=this.hitInterval; }
     }
     draw(g,cam){
       if(this.dead){ this.drawDeath(g,cam,this.w,this.h); return; }
@@ -2943,7 +2962,7 @@
       this.y += (moveY/md) * this.speed * moveMult * dt;
       applyEnemySeparation(this, game, dt);
       if(this.hitCd>0) this.hitCd=Math.max(0,this.hitCd-dt);
-      if(this.overlaps(p) && this.hitCd<=0){ p.applyDamage(this.touch); game.sfx.hit(); this.hitCd=this.hitInterval; }
+      if(this.overlaps(p) && this.hitCd<=0){ const took = p.applyDamage(this.touch); if (took) game.sfx.hit(); else game.sfx.shieldBlock(); this.hitCd=this.hitInterval; }
       if (this.aiming) {
         this.lockX = lerp(this.lockX, p.x, 0.18);
         this.lockY = lerp(this.lockY, p.y, 0.18);
@@ -3024,8 +3043,8 @@
 
       if(this.hitCd>0) this.hitCd=Math.max(0,this.hitCd-dt);
       if(this.overlaps(p) && this.hitCd<=0){
-        p.applyDamage(this.touch);
-        game.sfx.hit();
+        const took = p.applyDamage(this.touch);
+        if (took) game.sfx.hit(); else game.sfx.shieldBlock();
         this.hitCd=this.hitInterval;
       }
     }
@@ -3135,7 +3154,7 @@
       this.y += (moveY/md) * this.speed * moveMult * dt;
       applyEnemySeparation(this, game, dt);
       if(this.hitCd>0) this.hitCd=Math.max(0,this.hitCd-dt);
-      if(this.overlaps(p) && this.hitCd<=0){ p.applyDamage(this.touch); game.sfx.hit(); this.hitCd=this.hitInterval; }
+      if(this.overlaps(p) && this.hitCd<=0){ const took = p.applyDamage(this.touch); if (took) game.sfx.hit(); else game.sfx.shieldBlock(); this.hitCd=this.hitInterval; }
 
       if (this.aiming) {
         this.lockX = lerp(this.lockX, p.x, 0.22);
@@ -3268,6 +3287,13 @@
       const x=(s.x-9)|0, y=(s.y-7)|0;
 
       const bob = ((Math.sin(this.t*4)+1)*0.5*2)|0;
+      const glowA = 0.16 + 0.10*((Math.sin(this.t*5)+1)*0.5);
+
+      g.fillStyle = `rgba(255,222,120,${glowA})`;
+      g.beginPath(); g.arc(s.x, s.y-bob+1, 16, 0, Math.PI*2); g.fill();
+      g.strokeStyle = `rgba(255,245,185,${0.32 + glowA})`;
+      g.lineWidth = 2;
+      g.beginPath(); g.arc(s.x, s.y-bob+1, 12, 0, Math.PI*2); g.stroke();
 
       g.fillStyle="#7c4dff";
       g.fillRect(x, y-bob, 18, 12);
@@ -3284,6 +3310,11 @@
       g.fillStyle=(theme.mode===ThemeMode.DARK) ? "rgba(255,255,255,0.55)" : "rgba(0,0,0,0.18)";
       g.fillRect(x+3,y-bob-2,1,1);
       g.fillRect(x+14,y-bob-3,1,1);
+
+      const sparkleA = 0.55 + 0.45*((Math.sin(this.t*8)+1)*0.5);
+      g.fillStyle = `rgba(255,250,210,${sparkleA})`;
+      g.fillRect(x-4, y-bob+1, 1, 3); g.fillRect(x-5, y-bob+2, 3, 1);
+      g.fillRect(x+21, y-bob-1, 1, 3); g.fillRect(x+20, y-bob, 3, 1);
     }
   }
 
@@ -3532,6 +3563,18 @@
     { id:"advocate",  name:"Referral Marketer",subtitle:"Starts with Advocate",    maxBudget:100, speedMult:0.98, startWeapon:"advocate" },
   ];
 
+  const HERO_TOOLTIPS = {
+    affiliate: "Rapid shots that scale well with damage and fire rate.",
+    creator: "Orbiting projectiles that reward close passes through crowds.",
+    advocate: "A rotating helper that can evolve into close hits or radar sweeps.",
+  };
+
+  const PHASE_INTRO_TITLES = [
+    "Act 1: Banners and Pop-ups",
+    "Act 2: Cookies and Retargeters",
+    "Act 3: Gatekeepers, Black Boxes, and Walled Gardens",
+  ];
+
   // ========= Game =========
   const State = { TITLE:"title", MENU:"menu", PLAY:"play", LEVEL:"level", MOD:"mod", CHEST:"chest", DEAD:"dead", VICTORY:"victory", PAUSE:"pause" };
 
@@ -3606,6 +3649,8 @@
       this.phaseTime=0;
       this.phaseEliteNextAt=[];
       this.phaseBossSpawned=false;
+      this.phaseIntroDelaySec = 0;
+      this.phaseIntroDurationSec = 8;
 
       this.nextBossAt=CFG.enemies.boss.every;
       this.bossActive=false;
@@ -3800,6 +3845,8 @@
       this.phaseLowPopUnderSince = lowPop.map(() => 0);
       this.phaseLowPopNextAllowedAt = lowPop.map(() => 0);
       this.nextLowPopCheckAt = 0;
+      this.phaseIntroDelaySec = this.phaseIndex > 0 ? 4 : 0;
+      this.phaseIntroDurationSec = 8;
     }
 
     advancePhase() {
@@ -4241,7 +4288,8 @@
         const cx = ax + (bx-ax)*t, cy = ay + (by-ay)*t;
         const width = Number(a.tetherWidth || 8) + this.player.r;
         if (dist2(px,py,cx,cy) <= width*width) {
-          this.player.applyDamage(Number(a.tetherDamage)||8);
+          const took = this.player.applyDamage(Number(a.tetherDamage)||8);
+          if (took) this.sfx.hit(); else this.sfx.shieldBlock();
           group.tetherHitCd = Number(a.tetherHitInterval)||0.28;
         }
       }
@@ -4579,7 +4627,7 @@
 
       const m=this.surf.mouseToLogical(this.input);
       if(this.input.mouse.clicked){
-        const rects=this.choiceRects(this.modChoices.length, 86);
+        const rects=this.choiceRects(this.modChoices.length, 96);
         for(let i=0;i<rects.length;i++){
           const r=rects[i];
           if(m.x>=r.x&&m.x<=r.x+r.w&&m.y>=r.y&&m.y<=r.y+r.h){
@@ -5511,6 +5559,8 @@
         cooldownMult: (strategy.cooldownMult ?? base.cooldownMult ?? 1),
         nearEnemyRadius: (strategy.nearEnemyRadius ?? base.nearEnemyRadius ?? 28),
         nearPlayerRadius: (strategy.nearPlayerRadius ?? base.nearPlayerRadius ?? 72),
+        spawnMinDist: Math.max(0, numOr(strategy.spawnMinDist, numOr(base.spawnMinDist, 12))),
+        spawnMaxDist: Math.max(0, numOr(strategy.spawnMaxDist, numOr(base.spawnMaxDist, 72))),
         pulseInterval: numOr(base.pulseInterval, 1.0) * numOr(strategy.pulseIntervalMult, 1.0),
         pulseFlashSec: numOr(base.pulseFlashSec, 0.18),
 
@@ -5520,6 +5570,8 @@
         burnSec: 0,
 
         moveTowardPlayerSpeed: 0,
+        spawnAtPlayer: false,
+        expandFromPlayerSpeed: 0,
 
         viralEmitInterval: 0,
         viralEmitCount: 0,
@@ -5577,6 +5629,8 @@
           profile.moveTowardPlayerSpeed = numOr(cfg.moveTowardPlayerSpeed, 72);
           profile.lifeMult *= numOr(cfg.lifeMult, 1.0);
           profile.radiusMult *= numOr(cfg.radiusMult, 1.0);
+          profile.spawnMinDist = Math.max(0, numOr(cfg.spawnMinDist, profile.spawnMinDist));
+          profile.spawnMaxDist = Math.max(profile.spawnMinDist, numOr(cfg.spawnMaxDist, profile.spawnMaxDist));
         }
       } else if (behavior.id === "creator_spicy") {
         profile.burnDps = numOr(cfg.burnDps, 0) * numOr(bonuses.spicyBurnDpsMult, 1.0);
@@ -5619,29 +5673,11 @@
 
     rollCreatorSpawnPoint(profile) {
       const p = this.player;
-      const weights = CFG.creatorMods?.spawnWeights || { nearEnemy:0.5, nearPlayer:0.3, random:0.2 };
-      const nearEnemyW = numOr(weights.nearEnemy, 0.5);
-      const nearPlayerW = numOr(weights.nearPlayer, 0.3);
-      const randomW = numOr(weights.random, 0.2);
-      let r = Math.random() * Math.max(0.0001, nearEnemyW + nearPlayerW + randomW);
-
-      if (r < nearEnemyW) {
-        const target = this.getRandomLiveEnemy();
-        if (target) {
-          const a = rand(0, Math.PI * 2);
-          const d = rand(0, profile.nearEnemyRadius);
-          return { x: target.x + Math.cos(a) * d, y: target.y + Math.sin(a) * d };
-        }
-      }
-      r -= nearEnemyW;
-
-      if (r < nearPlayerW) {
-        const a = rand(0, Math.PI * 2);
-        const d = rand(0, profile.nearPlayerRadius);
-        return { x: p.x + Math.cos(a) * d, y: p.y + Math.sin(a) * d };
-      }
-
-      return this.cam.s2w(rand(0, CFG.logicalW), rand(0, CFG.logicalH));
+      const minD = Math.max(0, numOr(profile?.spawnMinDist, 0));
+      const maxD = Math.max(minD, numOr(profile?.spawnMaxDist, minD));
+      const a = rand(0, Math.PI * 2);
+      const d = rand(minD, maxD);
+      return { x: p.x + Math.cos(a) * d, y: p.y + Math.sin(a) * d };
     }
 
     makeCreatorFieldOptions(profile, extra={}) {
@@ -5743,7 +5779,10 @@
       }
 
       for (let i=0; i<casts; i++) {
-        const pos = this.rollCreatorSpawnPoint(profile);
+        const spawnAtPlayer = !!profile.spawnAtPlayer;
+        const pos = spawnAtPlayer ? { x:p.x, y:p.y } : this.rollCreatorSpawnPoint(profile);
+        const outwardA = rand(0, Math.PI * 2);
+        const outwardSp = Math.max(0, numOr(profile.expandFromPlayerSpeed, 0));
         const opts = this.makeCreatorFieldOptions(profile, {
           viralEmitInterval: profile.viralEmitInterval,
           viralEmitCount: profile.viralEmitCount,
@@ -5757,6 +5796,9 @@
           isViral: !!profile.viralOnKill,
           pulseInterval: (profile.pulseInterval || 1) / Math.max(0.0001, p.stats.creatorPulseFreq || 1),
           pulseFlashSec: profile.pulseFlashSec,
+          moveTowardPlayerSpeed: spawnAtPlayer ? 0 : profile.moveTowardPlayerSpeed,
+          driftVx: spawnAtPlayer ? Math.cos(outwardA) * outwardSp : 0,
+          driftVy: spawnAtPlayer ? Math.sin(outwardA) * outwardSp : 0,
           viralChildOpts: {
             radiusMult: profile.viralChildRadiusMult,
             lifeMult: profile.viralChildLifeMult,
@@ -6398,7 +6440,7 @@
 
       const m=this.surf.mouseToLogical(this.input);
       if(this.input.mouse.clicked){
-        const rects=this.choiceRects(this.upgradeChoices.length, 86);
+        const rects=this.choiceRects(this.upgradeChoices.length, 96);
         for(let i=0;i<rects.length;i++){
           const r=rects[i];
           if(m.x>=r.x&&m.x<=r.x+r.w&&m.y>=r.y&&m.y<=r.y+r.h){
@@ -6432,7 +6474,7 @@
 
       const m=this.surf.mouseToLogical(this.input);
       if(this.input.mouse.clicked){
-        const rects=this.choiceRects(this.chestChoices.length, 86);
+        const rects=this.choiceRects(this.chestChoices.length, 96);
         for(let i=0;i<rects.length;i++){
           const r=rects[i];
           if(m.x>=r.x&&m.x<=r.x+r.w&&m.y>=r.y&&m.y<=r.y+r.h){
@@ -6449,8 +6491,8 @@
       if(this.input.mouse.clicked) this.state=State.MENU;
     }
 
-    victoryHeroRect(){ return { x: 96, y: 176, w: 128, h: 28 }; }
-    victoryContinueRect(){ return { x: 256, y: 176, w: 128, h: 28 }; }
+    victoryHeroRect(){ return { x: 94, y: 186, w: 132, h: 28 }; }
+    victoryContinueRect(){ return { x: 252, y: 186, w: 142, h: 28 }; }
 
     enterVictory() {
       this.victoryRoi = this.score;
@@ -6912,7 +6954,34 @@
       for(const o of this.orbitals) o.draw(g,this.cam,this.player,this.time,this.theme);
 
       this.drawHUD(g);
+      this.drawPhaseIntro(g);
       this.drawTopRightControls(g);
+    }
+
+
+    drawPhaseIntro(g) {
+      if (this.endlessMode) return;
+      const title = PHASE_INTRO_TITLES[this.phaseIndex];
+      const delay = numOr(this.phaseIntroDelaySec, 0);
+      const dur = numOr(this.phaseIntroDurationSec, 8);
+      if (!title || this.phaseTime < delay || this.phaseTime >= delay + dur) return;
+      const t = this.phaseTime - delay;
+      const alpha = t < 0.5 ? (t / 0.5) : (t > dur - 0.8 ? Math.max(0, (dur - t) / 0.8) : 1);
+      const padX = 10;
+      g.save();
+      g.font = CFG.ui.small;
+      const tw = Math.ceil(g.measureText(title).width);
+      const bw = tw + padX*2;
+      const bh = 20;
+      const bx = 16;
+      const by = CFG.logicalH - 42;
+      g.fillStyle = this.theme.mode===ThemeMode.DARK ? `rgba(8,12,20,${0.34*alpha})` : `rgba(255,255,255,${0.58*alpha})`;
+      g.fillRect(bx, by, bw, bh);
+      g.strokeStyle = this.theme.mode===ThemeMode.DARK ? `rgba(255,255,255,${0.16*alpha})` : `rgba(0,0,0,${0.12*alpha})`;
+      g.strokeRect(bx+0.5, by+0.5, bw-1, bh-1);
+      g.fillStyle = this.theme.mode===ThemeMode.DARK ? `rgba(255,236,120,${alpha})` : `rgba(123,79,0,${alpha})`;
+      g.fillText(title, bx + padX, by + 13);
+      g.restore();
     }
 
     drawHUD(g) {
@@ -6930,17 +6999,23 @@
       g.font=CFG.ui.small;
       g.fillStyle=this.theme.text;
       g.fillText(`Budget: ${Math.ceil(p.budget)}/${p.maxBudget}`, x, y+22);
+
       const activeBoss = this.enemies.find(e => !e.dead && (e instanceof BossEnemy || e.enemyTypeId === "phase2_boss" || e.enemyTypeId === "phase3_boss" || e.enemyTypeId === "boss1"));
       const activeDooOpoly = this.enemies.find(e => !e.dead && e.enemyTypeId === "phase3_boss" && e.sharedBoss && e.sharedBoss.maxHp);
+
+      const metricsX = CFG.logicalW - 126;
+      const hudRowY = y + 36;
+
       if (activeDooOpoly?.sharedBoss) {
         const sb = activeDooOpoly.sharedBoss;
         const title = sb.titleText || activeDooOpoly.titleText || "Boss: Doo-Opoly";
         const labelX = x;
-        const labelY = y + 36;
-        const bw2 = 170, bh2 = 10;
+        const labelY = hudRowY;
         const titleW = Math.ceil(g.measureText(title).width);
         const bx2 = labelX + titleW + 10;
         const by2 = labelY - 8;
+        const bw2 = Math.max(96, Math.min(170, metricsX - bx2 - 12));
+        const bh2 = 10;
         const bt = clamp((sb.hp || 0) / Math.max(1, sb.maxHp || 1), 0, 1);
         g.fillStyle = this.theme.text2;
         g.fillText(title, labelX, labelY);
@@ -6953,24 +7028,42 @@
         g.strokeStyle = "rgba(255,255,255,0.18)";
         g.lineWidth = 1;
         g.strokeRect(bx2 + 0.5, by2 + 0.5, bw2 - 1, bh2 - 1);
-      } else if (activeBoss?.titleText) {
-        g.fillStyle=this.theme.text2;
-        g.fillText(activeBoss.titleText, x, y+36);
+      } else if (activeBoss?.titleText && Number(activeBoss.maxHp) > 0) {
+        const title = activeBoss.titleText;
+        const labelX = x;
+        const labelY = hudRowY;
+        const titleW = Math.ceil(g.measureText(title).width);
+        const bx2 = labelX + titleW + 10;
+        const by2 = labelY - 8;
+        const bw2 = Math.max(96, Math.min(170, metricsX - bx2 - 12));
+        const bh2 = 10;
+        const bt = clamp((activeBoss.hp || 0) / Math.max(1, activeBoss.maxHp || 1), 0, 1);
+        g.fillStyle = this.theme.text2;
+        g.fillText(title, labelX, labelY);
+        g.fillStyle = this.theme.hudTrack;
+        g.fillRect(bx2 - 2, by2 - 2, bw2 + 4, bh2 + 4);
+        g.fillStyle = "rgba(0,0,0,0.45)";
+        g.fillRect(bx2, by2, bw2, bh2);
+        g.fillStyle = "#d92d2d";
+        g.fillRect(bx2, by2, Math.floor(bw2 * bt), bh2);
+        g.strokeStyle = "rgba(255,255,255,0.18)";
+        g.lineWidth = 1;
+        g.strokeRect(bx2 + 0.5, by2 + 0.5, bw2 - 1, bh2 - 1);
       } else if (this.endlessMode) {
         g.fillStyle = this.theme.text2;
         const waveLabel = this.getEndlessWaveDef()?.label || "Endless";
-        g.fillText(`${CFG.ENDLESS?.waveLabelPrefix || "Endless:"} ${waveLabel}`, x, y+36);
+        g.fillText(`${CFG.ENDLESS?.waveLabelPrefix || "Endless:"} ${waveLabel}`, x, hudRowY);
       }
 
       const mm=Math.floor(this.time/60);
       const ss=Math.floor(this.time%60).toString().padStart(2,"0");
       g.fillStyle=this.theme.text2;
-      g.fillText(`Time: ${mm}:${ss}`, CFG.logicalW-122, 40);
-      g.fillText(`Score: ${this.score}`, CFG.logicalW-122, 54);
+      g.fillText(`Time: ${mm}:${ss}`, metricsX, 40);
+      g.fillText(`Score: ${this.score}`, metricsX, 54);
       if (this.endlessMode) {
         const em = Math.floor(this.endlessTime/60);
         const es = Math.floor(this.endlessTime%60).toString().padStart(2,"0");
-        g.fillText(`Endless: ${em}:${es}`, CFG.logicalW-122, 68);
+        g.fillText(`Endless: ${em}:${es}`, metricsX, 68);
       }
 
       const bx=12, by=CFG.logicalH-18, bw=320, bh=6;
@@ -6981,7 +7074,7 @@
       g.fillRect(bx,by,Math.floor(bw*xt),bh);
 
       g.fillStyle=this.theme.text2;
-      g.fillText("Space: Pause", CFG.logicalW-122, CFG.logicalH-12);
+      g.fillText("Space: Pause", metricsX, CFG.logicalH-12);
     }
 
     drawTopRightControls(g) {
@@ -7058,9 +7151,9 @@
       const ty = Math.floor(CFG.logicalH * 0.30);
 
       const panelX = 34;
-      const panelY = Math.floor(CFG.logicalH * 0.46);
+      const panelY = Math.floor(CFG.logicalH * 0.45);
       const panelW = CFG.logicalW - 68;
-      const panelH = 88;
+      const panelH = 94;
       g.fillStyle = infoPanel;
       g.fillRect(panelX, panelY, panelW, panelH);
       g.fillStyle = infoBorder;
@@ -7078,7 +7171,7 @@
         const lw = this.pixelTextWidth(line, subtitleScale);
         const lx = Math.floor((CFG.logicalW - lw) / 2);
         this.drawPixelText(g, line, lx, sy, subtitleScale, subColor);
-        sy += 12;
+        sy += 13;
       }
 
       const bullets = [
@@ -7086,10 +7179,10 @@
         "- Move with WASD/arrow keys",
         "- Press space to pause"
       ];
-      let by = sy + 8;
+      let by = sy + 10;
       for (const line of bullets) {
         this.drawPixelText(g, line, panelX + 12, by, 1, bulletColor);
-        by += 12;
+        by += 13;
       }
 
       const b=this.titleStartRect();
@@ -7117,16 +7210,13 @@
       g.fillStyle=this.theme.text;
       g.fillText("CHOOSE YOUR HERO", 18, 34);
 
-      // Slightly smaller instruction text to preserve space for the top-right Play button.
       g.font=CFG.ui.tiny;
       g.fillStyle=this.theme.text2;
       g.fillText("Pick a hero and click start to begin.", 18, 52);
 
       const m=this.surf.mouseToLogical(this.input);
-      g.font=CFG.ui.font;
-
       const cards=this.menuCards();
-      const boxYOffset = 10;
+
       for(let i=0;i<HEROES.length;i++){
         const hero=HEROES[i];
         const r=cards[i];
@@ -7137,18 +7227,33 @@
         g.fillStyle = locked ? "rgba(255,255,255,0.03)"
           : sel ? (hover ? this.theme.btnH : this.theme.btn)
           : (hover ? "rgba(255,255,255,0.10)" : this.theme.panel);
-        g.fillRect(r.x,r.y+boxYOffset,r.w,r.h);
+        g.fillRect(r.x,r.y,r.w,r.h);
 
         g.fillStyle=this.theme.border;
-        g.fillRect(r.x,r.y+boxYOffset,r.w,1); g.fillRect(r.x,r.y+boxYOffset+r.h-1,r.w,1);
-        g.fillRect(r.x,r.y+boxYOffset,1,r.h); g.fillRect(r.x+r.w-1,r.y+boxYOffset,1,r.h);
+        g.fillRect(r.x,r.y,r.w,1); g.fillRect(r.x,r.y+r.h-1,r.w,1);
+        g.fillRect(r.x,r.y,1,r.h); g.fillRect(r.x+r.w-1,r.y,1,r.h);
 
+        const leftX = r.x + 10;
+        const rightX = r.x + 228;
+        const tooltipW = r.w - (rightX - r.x) - 16;
+
+        g.font=CFG.ui.font;
         g.fillStyle = locked ? this.theme.text2 : this.theme.text;
-        g.fillText(hero.name + (locked ? " (Locked)" : ""), r.x+10, r.y+26);
+        g.fillText(hero.name + (locked ? " (Locked)" : ""), leftX, r.y+18);
 
         g.fillStyle = this.theme.text2;
-        g.fillText(hero.subtitle, r.x+10, r.y+44);
-        g.fillText(`Budget: ${hero.maxBudget}`, r.x+10, r.y+62);
+        g.fillText(hero.subtitle, leftX, r.y+38);
+
+        const tooltip = HERO_TOOLTIPS[hero.id] || "";
+        if (tooltip) {
+          g.font = CFG.ui.small;
+          const lines = this.wrapLines(g, tooltip, tooltipW).slice(0, 2);
+          const tooltipLineH = 13;
+          const tooltipTop = r.y + Math.floor((r.h - ((lines.length-1)*tooltipLineH + 10)) / 2) + 2;
+          for (let li=0; li<lines.length; li++) {
+            g.fillText(lines[li], rightX, tooltipTop + li*tooltipLineH);
+          }
+        }
       }
 
       const b=this.menuPlayRect();
@@ -7161,7 +7266,6 @@
       g.fillStyle=this.theme.border;
       g.fillRect(b.x,b.y,b.w,1); g.fillRect(b.x,b.y+b.h-1,b.w,1);
       g.fillRect(b.x,b.y,1,b.h); g.fillRect(b.x+b.w-1,b.y,1,b.h);
-      // Label (centered)
       g.fillStyle = locked ? this.theme.text2 : this.theme.text;
       const label = locked ? "LOCKED" : "START";
       const tw = g.measureText(label).width;
@@ -7188,13 +7292,13 @@
 
       g.font=CFG.ui.title;
       g.fillStyle="#ffd24a";
-      g.fillText(title, 18, 52);
+      g.fillText(title, 18, 48);
 
       g.font=CFG.ui.font;
       g.fillStyle=this.theme.text2;
-      g.fillText(subtitle, 18, 72);
+      g.fillText(subtitle, 18, 68);
 
-      const rects=this.choiceRects(choices.length, 86);
+      const rects=this.choiceRects(choices.length, 96);
       const m=this.surf.mouseToLogical(this.input);
 
       for(let i=0;i<rects.length;i++){
@@ -7210,29 +7314,42 @@
         g.fillRect(r.x,r.y,1,r.h); g.fillRect(r.x+r.w-1,r.y,1,r.h);
 
         const isCard = (u.kind === "upgrade" || u.kind === "modifier" || u.kind === "weapon_upgrade" || u.kind === "advocate_stat_choice" || u.kind === "advocate_shape_offer" || u.kind === "advocate_effect_offer" || u.kind === "creator_strategy_offer" || u.kind === "creator_behavior_offer");
-        const titleFont = isCard ? CFG.ui.upTitle : CFG.ui.font;
+        let titleFont = isCard ? CFG.ui.upTitle : CFG.ui.font;
         const descFont = isCard ? CFG.ui.upDesc : CFG.ui.small;
-        const flavorFont = isCard ? CFG.ui.upFlavor : CFG.ui.tiny;
-        const descLineH = isCard ? CFG.ui.upDescLineH : 12;
-        const flavorLineH = isCard ? CFG.ui.upFlavorLineH : 11;
+        const flavorFont = "9px monospace";
+        const titleLineH = isCard ? 14 : 13;
+        const descLineH = isCard ? Math.max(CFG.ui.upDescLineH, 11) : 12;
+        const flavorLineH = 11;
 
-        // Title (top)
         g.fillStyle=this.theme.text;
         g.font=titleFont;
-        g.fillText(u.name, r.x+10, r.y+20);
+        let titleLines = this.wrapLines(g, u.name || "", r.w-20).slice(0, 2);
+        if (titleLines.length > 1) {
+          titleFont = CFG.ui.font;
+          g.font = titleFont;
+          titleLines = this.wrapLines(g, u.name || "", r.w-20).slice(0, 2);
+        }
+        let ty = r.y + 18;
+        for (const line of titleLines) {
+          g.fillText(line, r.x+10, ty);
+          ty += titleLineH;
+        }
 
-        // Description (middle)
         g.fillStyle=this.theme.text2;
         g.font=descFont;
-        this.drawWrappedText(g, u.desc || "", r.x+10, r.y+38, r.w-20, descLineH);
+        const descLines = this.wrapLines(g, u.desc || "", r.w-20).slice(0, 3);
+        let dy = ty + 2;
+        for (const line of descLines) {
+          g.fillText(line, r.x+10, dy);
+          dy += descLineH;
+        }
 
-        // Flavor (bottom)
         if (u.flavor) {
           g.fillStyle=this.theme.text2;
           g.font=flavorFont;
-          const flines = this.wrapLines(g, u.flavor, r.w-20);
-          const fy = (r.y + r.h - 10) - (flines.length - 1) * flavorLineH;
-          for (let i=0;i<flines.length;i++) g.fillText(flines[i], r.x+10, fy + i*flavorLineH);
+          const flines = this.wrapLines(g, u.flavor, r.w-20).slice(0, 2);
+          const fy = r.y + r.h - 8 - (flines.length - 1) * flavorLineH;
+          for (let fi=0; fi<flines.length; fi++) g.fillText(flines[fi], r.x+10, fy + fi*flavorLineH);
         }
       }
 
@@ -7243,28 +7360,40 @@
     drawPauseOverlay(g) {
       g.fillStyle=(this.themeMode===ThemeMode.DARK) ? "rgba(0,0,0,0.55)" : "rgba(255,255,255,0.75)";
       g.fillRect(0,0,CFG.logicalW,CFG.logicalH);
+      const panel = { x: 82, y: 74, w: 316, h: 88 };
+      g.fillStyle = this.theme.panel;
+      g.fillRect(panel.x, panel.y, panel.w, panel.h);
+      g.fillStyle = this.theme.border;
+      g.fillRect(panel.x, panel.y, panel.w, 1); g.fillRect(panel.x, panel.y + panel.h - 1, panel.w, 1);
+      g.fillRect(panel.x, panel.y, 1, panel.h); g.fillRect(panel.x + panel.w - 1, panel.y, 1, panel.h);
       g.font=CFG.ui.title;
       g.fillStyle=this.theme.text;
-      g.fillText("PAUSED", 18, 52);
+      g.fillText("PAUSED", panel.x + 16, panel.y + 28);
       g.font=CFG.ui.font;
       g.fillStyle=this.theme.text2;
-      g.fillText("Press Space to resume.", 18, 72);
+      g.fillText("Press Space to resume.", panel.x + 16, panel.y + 54);
       this.drawTopRightControls(g);
     }
 
     drawDeadOverlay(g) {
       g.fillStyle=(this.themeMode===ThemeMode.DARK) ? "rgba(0,0,0,0.65)" : "rgba(255,255,255,0.80)";
       g.fillRect(0,0,CFG.logicalW,CFG.logicalH);
+      const panel = { x: 48, y: 54, w: 386, h: 126 };
+      g.fillStyle = this.theme.panel;
+      g.fillRect(panel.x, panel.y, panel.w, panel.h);
+      g.fillStyle = this.theme.border;
+      g.fillRect(panel.x, panel.y, panel.w, 1); g.fillRect(panel.x, panel.y + panel.h - 1, panel.w, 1);
+      g.fillRect(panel.x, panel.y, 1, panel.h); g.fillRect(panel.x + panel.w - 1, panel.y, 1, panel.h);
       g.font=CFG.ui.title;
       g.fillStyle="#e5484d";
-      g.fillText("RUN OVER", 18, 52);
+      g.fillText("RUN OVER", panel.x + 16, panel.y + 28);
       g.font=CFG.ui.font;
       g.fillStyle=this.theme.text;
-      g.fillText("Campaign over...the ads drained your budget. Try again?", 18, 78);
+      this.drawWrappedText(g, "Campaign over...the ads drained your budget. Try again?", panel.x + 16, panel.y + 54, panel.w - 32, 14);
       g.fillStyle=this.theme.text2;
-      g.fillText("Click to return to hero select.", 18, 98);
+      g.fillText("Click to return to hero select.", panel.x + 16, panel.y + 94);
       g.fillStyle=this.theme.text;
-      g.fillText(`Score: ${this.score}`, 18, 124);
+      g.fillText(`Score: ${this.score}`, panel.x + 16, panel.y + 112);
       this.drawTopRightControls(g);
     }
 
@@ -7284,7 +7413,7 @@
       g.fillStyle=(this.themeMode===ThemeMode.DARK) ? "rgba(0,0,0,0.68)" : "rgba(255,255,255,0.84)";
       g.fillRect(0,0,CFG.logicalW,CFG.logicalH);
 
-      const panel = { x: 58, y: 44, w: 364, h: 178 };
+      const panel = { x: 54, y: 40, w: 372, h: 184 };
       g.fillStyle = this.theme.panel;
       g.fillRect(panel.x, panel.y, panel.w, panel.h);
       g.fillStyle = this.theme.border;
@@ -7293,13 +7422,13 @@
 
       g.font = CFG.ui.title;
       g.fillStyle = "#ffd24a";
-      g.fillText("VICTORY", panel.x + 16, panel.y + 28);
+      g.fillText("VICTORY", panel.x + 16, panel.y + 30);
       g.font = CFG.ui.font;
       g.fillStyle = this.theme.text;
-      this.drawWrappedText(g, "You did it! You're a partnerships champion.", panel.x + 16, panel.y + 54, panel.w - 32, 14);
+      this.drawWrappedText(g, "You did it! You're a partnerships champion.", panel.x + 16, panel.y + 58, panel.w - 32, 14);
       g.fillStyle = this.theme.text2;
-      g.fillText(`Campaign ROI: ${this.victoryRoi}`, panel.x + 16, panel.y + 96);
-      g.fillText("Choose what to do next.", panel.x + 16, panel.y + 118);
+      g.fillText(`Campaign ROI: ${this.victoryRoi}`, panel.x + 16, panel.y + 102);
+      g.fillText("Choose what to do next.", panel.x + 16, panel.y + 124);
 
       const m = this.surf.mouseToLogical(this.input);
       const heroRect = this.victoryHeroRect();
@@ -7516,7 +7645,7 @@
     choiceRects(count, h){
       const pad=18;
       const gap=12;
-      const y = 120;
+      const y = 114;
       if (count <= 1) {
         const w = CFG.logicalW - pad*2;
         return [{ x: pad, y, w, h }];
@@ -7527,7 +7656,7 @@
     }
 
     menuCards(){
-      const x=18,y=62,w=CFG.logicalW-36,h=60,gap=8;
+      const x=18,y=60,w=CFG.logicalW-36,h=54,gap=10;
       return HEROES.map((_,i)=>({x,y:y+i*(h+gap),w,h}));
     }
 
